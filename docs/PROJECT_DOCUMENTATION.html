@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoneySaver (SaverStack) - Project Documentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #064e3b;
+            --primary-light: #0d9488;
+            --accent: #10b981;
+            --accent-hover: #059669;
+            --highlight: #f59e0b;
+            --bg-main: #ffffff;
+            --bg-subtle: #f0fdf4;
+            --text-dark: #1f2937;
+            --text-muted: #4b5563;
+            --code-bg: #1e1e1e;
+            --border: #e5e7eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-subtle);
+            line-height: 1.7;
+            display: flex;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        h1 { font-size: 2.5rem; border-bottom: 3px solid var(--accent); padding-bottom: 0.5rem; }
+        h2 { font-size: 2rem; margin-top: 2.5rem; border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; }
+        h3 { font-size: 1.5rem; margin-top: 2rem; color: var(--primary-light); }
+        h4 { font-size: 1.25rem; margin-top: 1.5rem; }
+
+        p { margin-bottom: 1.25rem; }
+        ul, ol { margin-bottom: 1.25rem; padding-left: 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        a { color: var(--primary-light); text-decoration: none; font-weight: 500; }
+        a:hover { text-decoration: underline; color: var(--primary); }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 300px;
+            background-color: var(--primary);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-brand span { color: var(--highlight); }
+
+        .nav-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-list li {
+            margin-bottom: 0.75rem;
+        }
+
+        .nav-list a {
+            color: rgba(255,255,255,0.8);
+            display: block;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .nav-list a:hover, .nav-list a.active {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+            padding-left: 1rem;
+            border-left: 3px solid var(--highlight);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 300px;
+            padding: 3rem 4rem;
+            width: calc(100% - 300px);
+            background-color: var(--bg-main);
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Cover Page */
+        .cover-page {
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            border-bottom: 4px solid var(--accent);
+            margin-bottom: 3rem;
+            page-break-after: always;
+        }
+
+        .cover-title {
+            font-size: 4rem;
+            color: var(--primary);
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            border: none;
+        }
+
+        .cover-subtitle {
+            font-size: 1.8rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+        }
+
+        .cover-meta {
+            background-color: var(--bg-subtle);
+            padding: 2rem;
+            border-left: 4px solid var(--highlight);
+            border-radius: 0 8px 8px 0;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .cover-meta p {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .cover-meta strong {
+            color: var(--primary);
+            display: inline-block;
+            width: 150px;
+        }
+
+        .confidential-badge {
+            display: inline-block;
+            background-color: var(--danger);
+            color: white;
+            padding: 0.5rem 1rem;
+            font-weight: 700;
+            font-size: 1.2rem;
+            border-radius: 4px;
+            margin-top: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--bg-subtle);
+        }
+
+        tr:hover {
+            background-color: #f3f4f6;
+        }
+
+        /* Code Blocks */
+        pre {
+            background-color: var(--code-bg);
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            background-color: #f1f5f9;
+            color: #b91c1c;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        /* Syntax Highlighting Fake */
+        .token.comment { color: #6a9955; }
+        .token.keyword { color: #569cd6; }
+        .token.string { color: #ce9178; }
+        .token.function { color: #dcdcaa; }
+        .token.number { color: #b5cea8; }
+        .token.operator { color: #d4d4d4; }
+        .token.punctuation { color: #d4d4d4; }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .badge.done { background-color: var(--bg-subtle); color: var(--success); border: 1px solid var(--success); }
+        .badge.pending { background-color: #fef3c7; color: var(--warning); border: 1px solid var(--warning); }
+        .badge.risk { background-color: #fee2e2; color: var(--danger); border: 1px solid var(--danger); }
+        .badge.info { background-color: #dbeafe; color: var(--info); border: 1px solid var(--info); }
+
+        /* Boxes / Callouts */
+        .callout {
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid;
+        }
+        .callout.info { background-color: #eff6ff; border-color: var(--info); }
+        .callout.success { background-color: #f0fdf4; border-color: var(--success); }
+        .callout.warning { background-color: #fffbeb; border-color: var(--warning); }
+        .callout.danger { background-color: #fef2f2; border-color: var(--danger); }
+
+        /* Architecture Diagrams (ASCII stylized) */
+        .diagram {
+            background-color: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            padding: 2rem;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            white-space: pre;
+            line-height: 1.2;
+            overflow-x: auto;
+            margin-bottom: 2rem;
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        /* Risk Matrix */
+        .risk-matrix {
+            display: grid;
+            grid-template-columns: auto 1fr 1fr 1fr;
+            grid-template-rows: auto 1fr 1fr 1fr;
+            gap: 2px;
+            margin-bottom: 2rem;
+            background: var(--text-dark);
+            border: 1px solid var(--text-dark);
+        }
+        .matrix-header { background: var(--primary); color: white; padding: 1rem; text-align: center; font-weight: bold; }
+        .matrix-cell { background: white; padding: 1rem; text-align: center; display: flex; flex-direction: column; justify-content: center; min-height: 100px; }
+        .matrix-y-axis { writing-mode: vertical-rl; transform: rotate(180deg); background: var(--primary); color: white; text-align: center; padding: 1rem; font-weight: bold; }
+        .matrix-high { background-color: #fee2e2; }
+        .matrix-med { background-color: #fef3c7; }
+        .matrix-low { background-color: #dcfce3; }
+
+        /* Print Styles */
+        @media print {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; width: 100%; padding: 0; box-shadow: none; background-color: white; }
+            body { background-color: white; color: black; }
+            
+            h1, h2, h3 { page-break-after: avoid; }
+            h2 { page-break-before: always; margin-top: 0; padding-top: 2rem; }
+            table, pre, .callout { page-break-inside: avoid; border: 1px solid #ccc; }
+            
+            a { text-decoration: underline; color: black; }
+            
+            @page {
+                margin: 2cm;
+                @bottom-center {
+                    content: "MoneySaver (SaverStack) — Confidential | v1.1 | 2026-07-22 | Page " counter(page);
+                    font-family: 'Inter', sans-serif;
+                    font-size: 9pt;
+                    color: #666;
+                }
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            Money<span>Saver</span>
+        </div>
+        <ul class="nav-list">
+            <li><a href="#executive-summary">1. Executive Summary</a></li>
+            <li><a href="#product-deep-dive">2. Product Deep Dive</a></li>
+            <li><a href="#prd-amendments">3. PRD Amendments v1.1</a></li>
+            <li><a href="#technical-architecture">4. Technical Architecture</a></li>
+            <li><a href="#database-schema">5. Database Schema</a></li>
+            <li><a href="#auth-security">6. Authentication & Security</a></li>
+            <li><a href="#storage-strategy">7. Storage Strategy</a></li>
+            <li><a href="#apis-integrations">8. APIs & Integrations</a></li>
+            <li><a href="#dev-workflow">9. Dev Workflow & CI/CD</a></li>
+            <li><a href="#problems-faced">10. Problems Faced & Solutions</a></li>
+            <li><a href="#risk-register">11. Risk Register</a></li>
+            <li><a href="#future-roadmap">12. Future Roadmap</a></li>
+            <li><a href="#kpi-dashboard">13. KPI Dashboard</a></li>
+            <li><a href="#file-structure">14. Project File Structure</a></li>
+            <li><a href="#glossary">15. Glossary</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            
+            <div class="cover-page">
+                <h1 class="cover-title">PROJECT DOCUMENTATION<br>MoneySaver (SaverStack)</h1>
+                <p class="cover-subtitle">"Never pay full price again — stack every coupon, card offer, and cashback in one click."</p>
+                
+                <div class="cover-meta">
+                    <p><strong>Version:</strong> 1.1 (PRD) / 1.0 (TRD)</p>
+                    <p><strong>Date:</strong> 2026-07-22</p>
+                    <p><strong>Target Audience:</strong> Engineering, Product, Investors</p>
+                    <p><strong>Platform:</strong> Next.js App Router / Web</p>
+                </div>
+                
+                <div class="confidential-badge">CONFIDENTIAL & PROPRIETARY</div>
+            </div>
+
+            <!-- SECTION 1 -->
+            <section id="executive-summary">
+                <h2>1. Executive Summary</h2>
+                <p>Welcome to the official, comprehensive project documentation for MoneySaver (internally codenamed <em>SaverStack</em>). This document synthesizes the Product Requirements Document (PRD v1.1) and Technical Requirements Document (TRD v1.0) into a single source of truth for all stakeholders, engineering teams, and strategic partners. It covers every aspect of the platform's vision, technical implementation, risk vectors, and future roadmap.</p>
+                
+                <h3>1.1 Project Overview & Mission</h3>
+                <p><strong>Mission:</strong> To democratize extreme savings for the Indian consumer by algorithmically stacking disparate discounts into a single, seamless checkout experience.</p>
+                <p><strong>Vision:</strong> To become the default layer between the consumer and e-commerce platforms, redirecting billions of rupees from corporate margins back into the pockets of the middle class.</p>
+                <p>MoneySaver is a cutting-edge web application designed primarily for Indian Gen Z and Millennial shoppers (aged 18-35). It acts as an intelligent aggregator and optimizer for e-commerce transactions on major platforms such as Amazon India, Flipkart, Myntra, and Zomato. Instead of requiring users to manually search for coupons, compare credit card offers, or navigate affiliate cashback portals, MoneySaver's 5-Layer Savings Stacker Engine performs complex deterministic calculations in real-time to present the absolute lowest Net Payable Amount.</p>
+                
+                <h3>1.2 The Indian E-commerce Savings Problem</h3>
+                <p>The Indian e-commerce market is projected to reach $350 billion by 2030. However, the discount ecosystem is highly fragmented, intentionally opaque, and structurally hostile to the average consumer. Brands and marketplaces use multi-layered discount strategies—a combination of baseline prices, limited-time promo codes, bank-specific credit card discounts (often rotating weekly), and affiliate cashback networks—to price discriminate.</p>
+                <p>The average consumer leaves approximately 12-18% of potential savings on the table per transaction because:</p>
+                <ul>
+                    <li><strong>Cognitive Overload:</strong> Checking CashKaro, then searching Telegram groups for coupons, then verifying which of their 4 credit cards gives the best discount on Flipkart on a Tuesday is exhausting.</li>
+                    <li><strong>Data Silos:</strong> Card offers are locked in bank PDFs or separate apps (like Cred); coupons are on site A; affiliate links are on site B.</li>
+                    <li><strong>Expiry Anxiety:</strong> Coupons and bank offers expire rapidly, leading to FOMO but also frequent disappointment at checkout.</li>
+                </ul>
+
+                <h3>1.3 MoneySaver's Unique Position</h3>
+                <p>MoneySaver solves this by inverting the model. Instead of the user hunting for discounts, they input their cart details, and MoneySaver computes the optimal path to checkout. We are not just a "coupon site"; we are a deterministic financial calculation engine.</p>
+                <p>Our unique 5-Layer Savings Stacker Engine mathematically proves the best possible price by evaluating:</p>
+                <ol>
+                    <li>Base Product Price</li>
+                    <li>Store Coupon / Promo Code (via scraping and OCR)</li>
+                    <li>Discounted Gift Voucher availability</li>
+                    <li>Bank Card / UPI Instant Discount logic</li>
+                    <li>Affiliate Cashback Percentage</li>
+                </ol>
+                
+                <div class="callout success">
+                    <strong>Example Calculation:</strong>
+                    A user wants to buy headphones listed at ₹2,000.
+                    Base: ₹2,000 → Code "AUDIO15" (-₹300) → Pay with HDFC Millennia (-5% voucher = -₹85) → Instant 10% HDFC discount (-₹170) → CashKaro affiliate link (6% = -₹102). 
+                    <strong>Final Net Payable: ₹1,343 (Saved ₹657 or 32.8%)</strong>
+                </div>
+
+                <h3>1.4 Business Model</h3>
+                <p>MoneySaver operates on a zero-friction, free-to-use model for consumers, monetizing through B2B channels and performance marketing:</p>
+                <ul>
+                    <li><strong>Phase 1 (Current): Affiliate Commissions.</strong> Every transaction routed through our Stacker Engine utilizes our affiliate links (e.g., EarnKaro, Cuelinks, INRDeals). We earn 2-12% commission on the Gross Merchandise Value (GMV). We pass a portion of this back as cashback to the user, keeping the delta as revenue.</li>
+                    <li><strong>Phase 1.5: Gift Card Arbitrage.</strong> By redirecting users to buy discounted gift cards (via affiliate links, zero-KYC on our end), we earn a flat commission per voucher sold.</li>
+                    <li><strong>Phase 2 (Roadmap): Premium Subscription.</strong> A ₹99/month "Saver Pro" tier that unlocks automated browser extension application of codes, premium credit card tracking, and zero-delay cashback withdrawals.</li>
+                </ul>
+
+                <h3>1.5 Competitive Differentiation</h3>
+                <p>How we differ from existing players:</p>
+                <ul>
+                    <li><strong>vs. Single Coupon Sites (Coupondunia, GrabOn):</strong> They only provide coupons. We provide the <em>stack</em>—coupons + cards + vouchers. We also crowdsource via OCR, ensuring fresher codes.</li>
+                    <li><strong>vs. Bank Apps (SmartBuy, YONO):</strong> Bank apps only show offers for their specific bank. We are bank-agnostic and allow users to select which cards they own to compute the best one.</li>
+                    <li><strong>vs. Cashback Apps (CashKaro):</strong> CashKaro requires you to click out from their app. MoneySaver integrates the cashback calculation directly into the upfront checkout decision process.</li>
+                </ul>
+            </section>
+
+            <!-- SECTION 2 -->
+            <section id="product-deep-dive">
+                <h2>2. Product Deep Dive</h2>
+                <p>This section details the seven core features of MoneySaver, user personas, and explicit scope boundaries.</p>
+
+                <h3>2.1 Core Features</h3>
+
+                <h4>1. Screenshot Coupon Parser (OCR)</h4>
+                <p><strong>The Problem:</strong> The best coupons are often hidden in Instagram ads, YouTube sponsor reads, or physical flyers. Typing these out is friction.<br>
+                <strong>The Solution:</strong> Users can upload a screenshot of any ad. We use Google Cloud Vision API to extract text, run RegEx to identify likely promo codes (e.g., words in ALL CAPS with numbers, next to words like "OFF" or "%"), and automatically inject them into our system.<br>
+                <strong>Flow:</strong> User uploads image -> S3 ephemeral bucket -> Next.js Server Action -> GCP Vision API -> Text extraction -> RegEx parsing -> Code identified -> User validates -> Added to public database.</p>
+
+                <h4>2. Community & System Coupon Vault</h4>
+                <p>A decentralized, continuously updated repository of promo codes. It features a Reddit-style upvote/downvote system. To combat stale codes, we implement a 24-hour cron job that flags codes with a >30% downvote ratio for manual review or automatic deprecation (AMD-03).</p>
+
+                <h4>3. Multi-Tier Savings Stacker Engine</h4>
+                <p>The heart of the application. A deterministic algorithm that takes `SavingsStackInput` (cart value, store, user cards) and outputs `SavingsStackOutput`. It respects the order of operations (e.g., instant bank discounts apply to the cart value <em>after</em> the promo code is applied, but <em>before</em> cashback is calculated).</p>
+
+                <h4>4. Cross-Platform Price Matrix</h4>
+                <p>For standard electronic or FMCG goods, the Stacker Engine will soon query APIs to show the "Post-Stack Price" across Amazon, Flipkart, and Croma simultaneously, proving where the user gets the best final deal based on their specific wallet contents.</p>
+
+                <h4>5. Payment & Card Optimizer</h4>
+                <p>Users can (optionally, securely) select which credit/debit cards they hold (e.g., "SBI Cashback", "HDFC Millennia", "Amazon ICICI"). The Engine queries the `bank_offers` table to find the highest applicable instant discount or reward point yield for the specific store and cart value.</p>
+
+                <h4>6. Discounted Voucher Integration (AMD-05)</h4>
+                <p>Instead of acting as a marketplace and dealing with RBI KYC regulations for prepaid instruments, we act as an affiliate redirector for platforms like Gyftr or Woohoo. If a 5% discount voucher is available for Myntra, we factor it into the stack and provide the affiliate link to purchase it.</p>
+
+                <h4>7. Product & Store Deal Search</h4>
+                <p>A fast, cached search interface (powered by Upstash Redis) allowing users to search for "Zomato" or "Nike" and instantly see the current active stack matrix.</p>
+
+                <h3>2.2 User Personas</h3>
+                
+                <div class="callout info">
+                    <strong>Persona A: Rohan (22, College Student)</strong>
+                    <br><strong>Profile:</strong> Tech-savvy, low disposable income, has one basic SBI debit card, heavily uses UPI.
+                    <br><strong>Scenario:</strong> Ordering a pizza on Zomato. Rohan uses MoneySaver to find the best promo code (extracted via OCR from a Telegram group earlier that day). MoneySaver tells him his SBI debit card gives no discount, but buying a Zomato voucher via Amazon Pay UPI yields 5% cashback. He follows the stack and saves ₹120 on his ₹800 order.
+                </div>
+
+                <div class="callout info">
+                    <strong>Persona B: Ananya (29, Software Engineer)</strong>
+                    <br><strong>Profile:</strong> High disposable income, holds 4 premium credit cards (HDFC Infinia, SBI Cashback, Axis Magnus). Optimizes for maximum reward points.
+                    <br><strong>Scenario:</strong> Buying a ₹1,20,000 MacBook on Flipkart. Ananya inputs her cards into the Stacker Engine. The engine calculates that while HDFC offers an instant ₹5,000 discount, using her SBI Cashback card via a specific affiliate link actually yields ₹6,000 in statement credit. She chooses the optimal path.
+                </div>
+
+                <h3>2.3 Out of Scope (What we are NOT building)</h3>
+                <p>To maintain technical focus and legal safety, the following are strictly out of scope for v1.x:</p>
+                <ul>
+                    <li><strong>Direct Checkout:</strong> We do not process payments or host the final cart. We are an aggregator/comparator.</li>
+                    <li><strong>Account Scraping:</strong> We do not ask for users' bank login credentials or scrape their emails for receipts. Card selection is manual and generic (e.g., "I have an HDFC card", not "Here is my card number").</li>
+                    <li><strong>Guaranteed Cashback:</strong> Because affiliate networks can drop tracking cookies, we estimate cashback but clearly state it is subject to partner tracking.</li>
+                </ul>
+            </section>
+
+            <!-- SECTION 3 -->
+            <section id="prd-amendments">
+                <h2>3. PRD Amendments v1.1</h2>
+                <p>During the technical planning phase, several requirements were amended to ensure technical feasibility, legal compliance, and faster time-to-market.</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Original Plan</th>
+                            <th>Revised Plan (v1.1)</th>
+                            <th>Rationale & Impact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>AMD-01</strong></td>
+                            <td>Custom JWT Auth with NextAuth</td>
+                            <td><strong>Clerk (Google OAuth + Email OTP)</strong></td>
+                            <td>NextAuth requires managing our own database sessions and SMTP. Clerk offloads security, provides instant Google OAuth, and handles bot-protection natively. Reduces dev time by 4 days.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AMD-02</strong></td>
+                            <td>OCR parsing 92% accurate out of box</td>
+                            <td><strong>85% target + Manual UI Correction</strong></td>
+                            <td>GCP Vision struggles with stylized fonts in ads. Targeting 92% algorithmically is unfeasible. Providing a UI for users to manually correct the extracted text ensures 100% final accuracy.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AMD-03</strong></td>
+                            <td>Admin manual review of dead coupons</td>
+                            <td><strong>24h Cron + Crowd Downvotes</strong></td>
+                            <td>Scaling requires decentralization. A daily cron job combined with user downvotes automatically deprecates invalid codes, keeping the database fresh.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AMD-04</strong></td>
+                            <td>Silent affiliate redirects</td>
+                            <td><strong>ASCI Disclosure Badges</strong></td>
+                            <td>The Advertising Standards Council of India (ASCI) mandates clear disclosure of affiliate links. UI must explicitly state "We earn a commission" to avoid legal penalties.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AMD-05</strong></td>
+                            <td>Sell discounted vouchers directly</td>
+                            <td><strong>Affiliate Redirect only (Zero-KYC)</strong></td>
+                            <td>Selling vouchers directly classifies us as a Payment Aggregator / PPI issuer under RBI guidelines, requiring massive compliance and KYC. Redirecting bypasses this completely.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AMD-06</strong></td>
+                            <td>Basic dashboard</td>
+                            <td><strong>Instant Savings Banner + Cumulative Counter</strong></td>
+                            <td>To drive retention (Target >35%), users must feel the psychological reward of saving. The `users.cumulative_savings` field tracks lifetime savings, gamifying the experience.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- SECTION 4 -->
+            <section id="technical-architecture">
+                <h2>4. Technical Architecture</h2>
+                <p>The system is built on a modern, serverless stack optimizing for low latency (Stacker Engine &le; 150ms), high developer velocity, and zero-maintenance infrastructure.</p>
+
+                <h3>4.1 System Architecture Diagram</h3>
+                <div class="diagram">
+[CLIENT BROWSER]
+       |
+       | (HTTPS / Next.js App Router)
+       v
+[VERCEL EDGE NETWORK] ---> [UPSTASH REDIS]
+       |                      (Rate Limiting & Search Cache)
+       |
+       +---> (Server Components) ----> [CLERK AUTH]
+       |
+       +---> (Server Actions)
+                 |
+                 +---> [GCP VISION API] (OCR Service)
+                 |
+                 +---> [AWS S3] (Ephemeral Image Uploads)
+                 |
+                 +---> [NEON POSTGRESQL] (Drizzle ORM)
+                            - users
+                            - stores
+                            - coupons
+                            - bank_offers
+                            - voucher_deals
+                </div>
+
+                <h3>4.2 Frontend Architecture (Next.js 14+ App Router)</h3>
+                <p>We leverage React Server Components (RSC) to ship zero JavaScript to the client for static pages (like the landing page and basic store listings). Interactive client components (like the Stacker UI, which requires Zustand for state management) are explicitly marked with <code>"use client"</code>. Styling is handled via Tailwind CSS and shadcn/ui for accessible, unstyled radix primitives.</p>
+
+                <h3>4.3 Backend Architecture (Server Actions)</h3>
+                <p>Instead of traditional REST API routes, we use Next.js Server Actions for mutations (e.g., submitting a coupon, upvoting). This provides end-to-end type safety with TypeScript and integrates seamlessly with React's form transitions.</p>
+
+                <h3>4.4 Pipeline A: OCR Screenshot Ingestion</h3>
+                <ol>
+                    <li>Client requests a pre-signed S3 URL from a Server Action.</li>
+                    <li>Client uploads the image directly to AWS S3 (bypassing Vercel's payload limits).</li>
+                    <li>Client calls `processOCRAction` with the S3 object key.</li>
+                    <li>Server fetches the image stream, sends to GCP Vision API.</li>
+                    <li>Server applies RegEx: <code>/[A-Z0-9]{4,15}/g</code> to find potential codes.</li>
+                    <li>Returns potential codes to client. S3 lifecycle policy deletes the image after 15 minutes.</li>
+                </ol>
+
+                <h3>4.5 Pipeline B: Savings Stacker Engine (The Algorithm)</h3>
+                <p>The core algorithm is a pure TypeScript function executed on the edge or server.</p>
+<pre><code class="language-typescript"><span class="token comment">// Interface Definitions</span>
+interface SavingsStackInput {
+  basePrice: number;
+  storeId: string;
+  userId?: string;
+  selectedCardIds?: string[];
+}
+
+interface SavingsStackOutput {
+  basePrice: number;
+  bestCoupon: { code: string; discountAmount: number; source: 'PUBLIC' | 'PERSONAL' };
+  voucherOption?: { provider: string; purchaseCost: number; faceValue: number; netSavings: number };
+  affiliateCashback: { network: string; cashbackAmount: number; percentage: number };
+  bestCardOffer?: { bankName: string; cardName: string; discountAmount: number };
+  finalNetPayable: number;
+  totalSaved: number;
+  effectiveDiscountPercentage: number;
+}</code></pre>
+                <p><strong>Logic Flow:</strong> The engine queries the DB in parallel for all coupons, bank offers, and vouchers for the <code>storeId</code>. It then permutes the valid combinations. Note: Bank instant discounts are usually applied to the post-coupon cart value, while cashback is applied to the final paid amount (excluding tax/shipping if specified in JSONB conditions).</p>
+
+                <h3>4.6 TRD Decisions Log (The "Why")</h3>
+                <ul>
+                    <li><strong>TRD-D01: Next.js App Router.</strong> Chosen for superior SEO (critical for "StoreName coupons" queries) and Server Components performance.</li>
+                    <li><strong>TRD-D02: Drizzle ORM over Prisma.</strong> Prisma's Rust engine is heavy and has cold start issues on serverless. Drizzle is lightweight SQL-like syntax and natively supports Neon's HTTP driver.</li>
+                    <li><strong>TRD-D03: Upstash Redis.</strong> Pay-per-request pricing fits our bursty traffic profile perfectly, unlike ElastiCache which requires provisioned instances.</li>
+                    <li><strong>TRD-D04: Neon PostgreSQL.</strong> Native branching allows every GitHub PR to get its own isolated database clone instantly.</li>
+                    <li><strong>TRD-D07: shadcn/ui.</strong> Copy-paste components mean we own the code, preventing future bloat from massive UI library dependencies.</li>
+                </ul>
+            </section>
+
+            <!-- SECTION 5 -->
+            <section id="database-schema">
+                <h2>5. Database Schema</h2>
+                <p>We utilize a highly normalized, relational schema in PostgreSQL (hosted on Neon). We rely heavily on PostgreSQL's <code>JSONB</code> capabilities for flexible condition logic (e.g., "Valid only on electronics" or "Max discount ₹500").</p>
+
+                <h3>5.1 Data Definition Language (DDL)</h3>
+                
+<pre><code class="language-sql"><span class="token comment">-- 1. USERS TABLE</span>
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    clerk_id VARCHAR(255) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    full_name VARCHAR(255),
+    cumulative_savings NUMERIC(10, 2) DEFAULT 0.00,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+<span class="token comment">-- 2. STORES TABLE</span>
+CREATE TABLE stores (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) UNIQUE NOT NULL,
+    logo_url VARCHAR(1024),
+    base_url VARCHAR(1024),
+    affiliate_partner_name VARCHAR(100),
+    affiliate_redirect_url VARCHAR(1024),
+    default_cashback_percent NUMERIC(5, 2) DEFAULT 0.00
+);
+
+<span class="token comment">-- 3. COUPONS TABLE</span>
+CREATE TABLE coupons (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    store_id UUID REFERENCES stores(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE SET NULL, <span class="token comment">-- Null means system/scraped</span>
+    code VARCHAR(50) NOT NULL,
+    discount_type VARCHAR(20) CHECK (discount_type IN ('PERCENTAGE', 'FLAT')),
+    discount_value NUMERIC(10, 2) NOT NULL,
+    min_cart_value NUMERIC(10, 2) DEFAULT 0.00,
+    max_discount_amount NUMERIC(10, 2),
+    source VARCHAR(50) CHECK (source IN ('PUBLIC_SCRAPED', 'USER_OCR', 'COMMUNITY')),
+    is_active BOOLEAN DEFAULT TRUE,
+    upvotes INTEGER DEFAULT 0,
+    downvotes INTEGER DEFAULT 0,
+    expires_at TIMESTAMP WITH TIME ZONE,
+    conditions JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+<span class="token comment">-- 4. BANK OFFERS TABLE</span>
+CREATE TABLE bank_offers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    store_id UUID REFERENCES stores(id) ON DELETE CASCADE,
+    bank_name VARCHAR(100) NOT NULL,
+    card_type VARCHAR(100) NOT NULL,
+    discount_percent NUMERIC(5, 2) NOT NULL,
+    max_discount_amount NUMERIC(10, 2) NOT NULL,
+    min_transaction_amount NUMERIC(10, 2) DEFAULT 0.00,
+    is_active BOOLEAN DEFAULT TRUE,
+    valid_until TIMESTAMP WITH TIME ZONE,
+    conditions JSONB
+);
+
+<span class="token comment">-- 5. VOUCHER DEALS TABLE</span>
+CREATE TABLE voucher_deals (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    store_id UUID REFERENCES stores(id) ON DELETE CASCADE,
+    provider_name VARCHAR(100) NOT NULL,
+    discount_percent NUMERIC(5, 2) NOT NULL,
+    affiliate_purchase_url VARCHAR(1024) NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE
+);</code></pre>
+
+                <h3>5.2 Indexing & Performance Strategy</h3>
+                <p>To meet the &le;150ms Stacker Engine response time, critical read paths are indexed:</p>
+                <ul>
+                    <li><code>CREATE INDEX idx_coupons_store_active ON coupons(store_id) WHERE is_active = TRUE;</code> (Partial index for extreme speed).</li>
+                    <li><code>CREATE INDEX idx_bank_offers_store ON bank_offers(store_id, is_active, valid_until);</code></li>
+                    <li><code>CREATE UNIQUE INDEX idx_users_clerk_id ON users(clerk_id);</code></li>
+                </ul>
+                <p><strong>JSONB Usage:</strong> The `conditions` column in `coupons` might look like: <code>{"categories_excluded": ["electronics", "gold"], "new_user_only": false}</code>. This allows unstructured business logic without migrating the schema constantly.</p>
+            </section>
+
+            <!-- SECTION 6 -->
+            <section id="auth-security">
+                <h2>6. Authentication & Security</h2>
+                
+                <h3>6.1 Auth Flow (Clerk)</h3>
+                <p>We outsource identity management to Clerk to ensure enterprise-grade security and zero maintenance of password hashes. Users authenticate via Google OAuth or Email OTP. Upon successful authentication, Clerk issues a JWT session token. Our middleware intercepts requests, verifies the Clerk JWT, and attaches the <code>userId</code>. A Clerk webhook (<code>user.created</code>) syncs the user profile into our Neon <code>users</code> table.</p>
+
+                <h3>6.2 OWASP Top 10 Mitigations</h3>
+                <ul>
+                    <li><strong>Injection:</strong> Drizzle ORM automatically parameterizes all SQL queries, eliminating SQL injection vectors.</li>
+                    <li><strong>XSS:</strong> Next.js automatically escapes all React rendered content. We implement a strict Content Security Policy (CSP) header.</li>
+                    <li><strong>CSRF:</strong> Handled by Clerk's session management (SameSite cookies).</li>
+                    <li><strong>Broken Access Control:</strong> Server Actions explicitly check `auth().userId` before allowing mutations (like uploading a coupon). Users can only delete coupons they created.</li>
+                    <li><strong>Rate Limiting:</strong> Implemented via Upstash Redis.
+                        <ul>
+                            <li>Public Stacker Search: 30 req/min/IP</li>
+                            <li>OCR Upload: 5 req/min/User (prevents cloud bill spikes)</li>
+                            <li>Sign-up/OTP: 3 req/hour/IP (bot protection)</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3>6.3 Data Privacy & Ephemerality</h3>
+                <p>We practice data minimization. We do not store PAN cards, credit card numbers, or passwords. OCR images uploaded by users are stored in an AWS S3 bucket with a strict lifecycle policy that permanently deletes objects 15 minutes after upload. This ensures that if a user accidentally uploads a screenshot containing personal messages, it is destroyed almost immediately after the API processes it.</p>
+
+                <h3>6.4 Affiliate Redirect Security (HMAC)</h3>
+                <p>To prevent malicious actors from scraping our affiliate links and replacing our affiliate tags with theirs, our redirect endpoints generate short-lived, HMAC-signed URLs. Example: <code>/api/redirect?store=zomato&sig=a9f8b7c6</code>. The signature is validated server-side before issuing the 302 redirect to the affiliate network.</p>
+            </section>
+
+            <!-- SECTION 7 -->
+            <section id="storage-strategy">
+                <h2>7. Storage Strategy</h2>
+                <p>We utilize a specialized, multi-tiered approach to storage to balance cost, performance, and compliance.</p>
+                
+                <ul>
+                    <li><strong>Primary Relational (Neon PostgreSQL):</strong> The source of truth for users, coupons, and rules. Serverless architecture scales to zero when idle and scales instantly under load. Point-in-Time Recovery (PITR) is enabled for 7 days.</li>
+                    <li><strong>Caching & Rate Limiting (Upstash Redis):</strong> Acts as a global cache.
+                        <ul>
+                            <li><code>cache:store:{slug}</code> -> TTL 30 minutes. Caches the list of active coupons and bank offers to prevent hammering the DB.</li>
+                            <li><code>rate:{ip}:{action}</code> -> TTL based on limit.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Blob / Object Storage (AWS S3):</strong> Used exclusively for OCR image buffering. Configured with a private bucket policy, blocking all public access. The client gets a temporary pre-signed URL to PUT the object.</li>
+                </ul>
+            </section>
+
+            <!-- SECTION 8 -->
+            <section id="apis-integrations">
+                <h2>8. APIs & Integrations</h2>
+                
+                <h3>8.1 Internal Server Actions (API)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Action / Endpoint</th>
+                            <th>Auth Required</th>
+                            <th>Rate Limit</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>calculateStack(input)</code></td>
+                            <td>No</td>
+                            <td>30/min/IP</td>
+                            <td>The core engine execution. Returns the optimal price matrix.</td>
+                        </tr>
+                        <tr>
+                            <td><code>submitCoupon(data)</code></td>
+                            <td>Yes</td>
+                            <td>10/hr/User</td>
+                            <td>Allows users to contribute new codes.</td>
+                        </tr>
+                        <tr>
+                            <td><code>voteCoupon(id, dir)</code></td>
+                            <td>Yes</td>
+                            <td>50/hr/User</td>
+                            <td>Upvote or downvote. Used for cron depreciation logic.</td>
+                        </tr>
+                        <tr>
+                            <td><code>getPreSignedUrl()</code></td>
+                            <td>Yes</td>
+                            <td>5/min/User</td>
+                            <td>Generates AWS S3 upload URL for OCR pipeline.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>8.2 External Integrations</h3>
+                <ul>
+                    <li><strong>Google Cloud Vision API:</strong> We utilize the <code>DOCUMENT_TEXT_DETECTION</code> model. It handles dense text (like terms and conditions) better than standard text detection, which is vital for parsing coupon exclusions.</li>
+                    <li><strong>Affiliate Networks (EarnKaro / Cuelinks):</strong> We consume their daily CSV/JSON feeds to update the <code>stores.default_cashback_percent</code> and ingest automated voucher deals into <code>voucher_deals</code>.</li>
+                </ul>
+            </section>
+
+            <!-- SECTION 9 -->
+            <section id="dev-workflow">
+                <h2>9. Development Workflow & CI/CD</h2>
+                <p>We enforce a strict, automated pipeline to ensure high quality and zero-downtime deployments.</p>
+
+                <h3>9.1 Branching & Environments</h3>
+                <ul>
+                    <li><code>main</code> -> Maps to Vercel Production and Neon Production DB.</li>
+                    <li><code>develop</code> -> Maps to Vercel Preview and Neon Staging DB.</li>
+                    <li><code>feature/*</code> -> E.g., <code>feature/ocr-parser</code>. Opening a PR automatically provisions a Vercel Preview URL and a dedicated Neon Database branch (cloned instantly via copy-on-write).</li>
+                </ul>
+
+                <h3>9.2 CI/CD Pipeline (GitHub Actions)</h3>
+                <ol>
+                    <li><strong>Lint & Format:</strong> ESLint and Prettier check for code consistency.</li>
+                    <li><strong>Type Check:</strong> <code>tsc --noEmit</code> ensures no TypeScript errors.</li>
+                    <li><strong>Tests:</strong> Vitest runs unit tests on the Stacker Engine (critical to ensure pricing math is never broken).</li>
+                    <li><strong>Deploy:</strong> If checks pass, Vercel Action deploys the code.</li>
+                </ol>
+            </section>
+
+            <!-- SECTION 10 -->
+            <section id="problems-faced">
+                <h2>10. Problems Faced & Solutions Log</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Problem / Issue</th>
+                            <th>Root Cause</th>
+                            <th>Solution / Mitigation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2026-07-22</td>
+                            <td>Artifact write path error during project scaffolding.</td>
+                            <td>Agent tool rejected writing to the absolute Windows path <code>d:\Money Saver\docs\</code> due to missing explicit directory permissions for the write_file tool.</td>
+                            <td>Utilized the <code>ask_permission</code> tool to explicitly grant <code>write_file</code> access to the target workspace directory before invoking the write command. Added step to standard operating procedure.</td>
+                        </tr>
+                        <tr>
+                            <td>Anticipated</td>
+                            <td>GCP Vision API costs skyrocketing from abuse.</td>
+                            <td>Malicious actors spamming the OCR endpoint with large images.</td>
+                            <td>Implemented strict 5 req/min Upstash Redis rate limit tied to the Clerk User ID, plus maximum file size validation (2MB) before S3 upload.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- SECTION 11 -->
+            <section id="risk-register">
+                <h2>11. Risk Register</h2>
+                
+                <div class="risk-matrix">
+                    <div class="matrix-header"></div>
+                    <div class="matrix-header">Low Impact</div>
+                    <div class="matrix-header">Med Impact</div>
+                    <div class="matrix-header">High Impact</div>
+                    
+                    <div class="matrix-y-axis">High Likelihood</div>
+                    <div class="matrix-cell matrix-med">Affiliate link hijacking</div>
+                    <div class="matrix-cell matrix-high">OCR accuracy below target (Risk 1)</div>
+                    <div class="matrix-cell matrix-high">Coupon scraping blocked (Risk 2)</div>
+                    
+                    <div class="matrix-y-axis">Med Likelihood</div>
+                    <div class="matrix-cell matrix-low">Bank offer data stale</div>
+                    <div class="matrix-cell matrix-med">Scaling past 10k DAU</div>
+                    <div class="matrix-cell matrix-high">Price API costs at scale</div>
+                    
+                    <div class="matrix-y-axis">Low Likelihood</div>
+                    <div class="matrix-cell matrix-low">Gift card KYC rules change</div>
+                    <div class="matrix-cell matrix-med">Extension store rejection</div>
+                    <div class="matrix-cell matrix-high">User Data Breach / RBI Action</div>
+                </div>
+
+                <h3>Key Risk Deep-Dives</h3>
+                <p><strong>Risk 9: RBI Regulatory Risk.</strong> <em>Impact: High. Likelihood: Low.</em> If we touch consumer funds or sell gift cards directly, we fall under RBI's Prepaid Payment Instrument (PPI) or Payment Aggregator (PA) guidelines. <em>Mitigation:</em> We act strictly as an aggregator and redirector. The user pays the marketplace (Amazon) or the affiliate partner (Gyftr) directly. We never touch the money.</p>
+                <p><strong>Risk 4: ASCI Compliance.</strong> <em>Impact: Medium. Likelihood: High.</em> The ASCI has cracked down on undisclosed finfluencers and affiliate sites. <em>Mitigation (AMD-04):</em> Clear, non-dismissible UI badges indicating "Powered by Affiliate Commissions" are injected via Next.js layouts on all outbound links.</p>
+            </section>
+
+            <!-- SECTION 12 -->
+            <section id="future-roadmap">
+                <h2>12. Future Roadmap</h2>
+                
+                <ul>
+                    <li><strong>v1.0 (Current Scope):</strong> Web App, OCR parsing, 5-Layer Stacker Engine, Community Vault.</li>
+                    <li><strong>v2.0 (Q1 2027):</strong> Chrome/Brave Browser Extension. This will auto-apply the Stacker Engine directly on the Amazon/Flipkart checkout page. We also launch the internal "Coin Wallet" to allow users to withdraw their cashback portion via UPI.</li>
+                    <li><strong>v3.0 (Q3 2027):</strong> Machine Learning price drop prediction. Expansion to Southeast Asian markets (Shopee, Lazada). B2B API allowing smaller D2C brands to embed our card optimizer on their Shopify checkouts.</li>
+                </ul>
+
+                <h3>Scalability Plan</h3>
+                <p>At <strong>1k DAU</strong>, the current serverless Next.js + Neon setup handles load perfectly. At <strong>10k DAU</strong>, we will implement Neon Read Replicas and shift more computation to the edge via Vercel Edge Functions. At <strong>100k DAU</strong>, we will split the monolithic Next.js app, pulling the Stacker Engine into a dedicated Rust microservice behind a gRPC interface for maximum throughput.</p>
+            </section>
+
+            <!-- SECTION 13 -->
+            <section id="kpi-dashboard">
+                <h2>13. KPI Dashboard & Measurement</h2>
+                <p>Success is measured via PostHog event tracking and Vercel Analytics.</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric / KPI</th>
+                            <th>Target (90 Days)</th>
+                            <th>Measurement Tool</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Avg Savings / User / Transaction</td>
+                            <td>&ge; ₹150</td>
+                            <td>PostHog Custom Event</td>
+                        </tr>
+                        <tr>
+                            <td>OCR Parse Success Rate</td>
+                            <td>&ge; 85%</td>
+                            <td>GCP Vision Logs / Sentry</td>
+                        </tr>
+                        <tr>
+                            <td>Affiliate Click-Through Rate (CTR)</td>
+                            <td>&ge; 25%</td>
+                            <td>PostHog Funnel Analysis</td>
+                        </tr>
+                        <tr>
+                            <td>30-Day User Retention</td>
+                            <td>&ge; 35%</td>
+                            <td>Clerk Auth + PostHog</td>
+                        </tr>
+                        <tr>
+                            <td>Gross Merchandise Value (GMV) Driven</td>
+                            <td>₹10,00,000+</td>
+                            <td>Affiliate Network Dashboards</td>
+                        </tr>
+                        <tr>
+                            <td>Largest Contentful Paint (LCP)</td>
+                            <td>&le; 2.5s</td>
+                            <td>Vercel Web Vitals</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- SECTION 14 -->
+            <section id="file-structure">
+                <h2>14. Project File Structure</h2>
+<pre><code>money-saver/
+├── .github/workflows/       # CI/CD pipelines
+├── src/
+│   ├── app/                 # Next.js 14 App Router pages
+│   │   ├── (auth)/          # Clerk login/register routes
+│   │   ├── api/             # Webhooks and external integrations
+│   │   ├── search/          # Search UI and results
+│   │   └── layout.tsx       # Root layout & providers
+│   ├── components/          # React components
+│   │   ├── ui/              # shadcn/ui primitives (buttons, dialogs)
+│   │   └── engine/          # Stacker engine UI blocks
+│   ├── lib/                 # Core logic
+│   │   ├── engine.ts        # The 5-Layer Stacker Algorithm (Pure TS)
+│   │   ├── db.ts            # Drizzle ORM instance
+│   │   └── redis.ts         # Upstash Redis client
+│   └── actions/             # Next.js Server Actions (mutations)
+├── docs/                    # Documentation
+│   ├── PRD.md               # v1.1 PRD
+│   ├── TRD.md               # v1.0 TRD
+│   └── PROJECT_DOCUMENTATION.html # This file
+├── drizzle/                 # SQL Migration files
+├── public/                  # Static assets
+└── package.json
+</code></pre>
+            </section>
+
+            <!-- SECTION 15 -->
+            <section id="glossary">
+                <h2>15. Glossary</h2>
+                <ul>
+                    <li><strong>ASCI:</strong> Advertising Standards Council of India.</li>
+                    <li><strong>DAU:</strong> Daily Active Users.</li>
+                    <li><strong>GMV:</strong> Gross Merchandise Value (total value of goods sold through our links).</li>
+                    <li><strong>HMAC:</strong> Hash-based Message Authentication Code (used to secure URLs).</li>
+                    <li><strong>JSONB:</strong> A binary format for JSON data used in PostgreSQL for efficient querying.</li>
+                    <li><strong>LCP:</strong> Largest Contentful Paint (a Core Web Vital measuring loading performance).</li>
+                    <li><strong>OCR:</strong> Optical Character Recognition (used to read text from images).</li>
+                    <li><strong>ORM:</strong> Object-Relational Mapping (e.g., Drizzle, Prisma).</li>
+                    <li><strong>PA / PPI:</strong> Payment Aggregator / Prepaid Payment Instrument (RBI regulatory definitions).</li>
+                    <li><strong>PITR:</strong> Point-in-Time Recovery (database backup method).</li>
+                    <li><strong>RLS:</strong> Row-Level Security (PostgreSQL security feature).</li>
+                    <li><strong>SSR:</strong> Server-Side Rendering.</li>
+                    <li><strong>TTL:</strong> Time to Live (cache expiration time).</li>
+                </ul>
+            </section>
+
+        </div>
+    </main>
+
+</body>
+</html>

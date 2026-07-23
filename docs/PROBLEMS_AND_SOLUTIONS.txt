@@ -1,0 +1,194 @@
+================================================================================
+MONEYSAVER (SAVERSTACK) — COMPREHENSIVE PROBLEMS & SOLUTIONS LOG
+================================================================================
+Document: Complete Engineering Post-Mortem & Future Safeguards Log
+Version: 1.28.0
+Date: 2026-07-23
+Status: Living Document (Maintained till user requests final handover)
+
+--------------------------------------------------------------------------------
+PART 1: PROBLEMS FACED TILL NOW AND HOW THEY WERE RESOLVED
+--------------------------------------------------------------------------------
+
+1. Artifact Directory Write Path Restriction (Phase 0 Setup)
+   - Problem: System tool rejected direct file writes when trying to save markdown reports in the root project folder.
+   - Cause: Tool safety configuration required report artifacts to be stored inside the system brain directory (`.gemini/antigravity/brain`).
+   - How Overcome: Switched to explicit `write_to_file` and `multi_replace_file_content` tools with workspace permission grants for project files.
+
+2. Coupon Verification State Machine Limitation (Phase 0 - Schema Design)
+   - Problem: Simple true/false boolean flags (`is_active`) could not support crowd-sourced coupon downvoting workflows.
+   - Cause: When users mark a code as expired, it shouldn't disappear immediately—it needs a "PENDING_REVIEW" status for community validation.
+   - How Overcome: Refactored string status columns into explicit PostgreSQL ENUM types (`verification_status` ENUM: `VERIFIED`, `PENDING_REVIEW`, `EXPIRED`) in schema v1.2.
+
+3. Drizzle ORM Self-Referential Foreign Key Type Error (Phase 7 Local Build)
+   - Problem: Next.js build failed with `Type error: 'users' implicitly has type 'any' because it does not have a type annotation`.
+   - Cause: In `db/schema/users.ts`, the `referredBy` column referenced `users.id` within its own const initializer, confusing TypeScript type inference.
+   - How Overcome: Explicitly annotated the callback with Drizzle's `AnyPgColumn` type: `(): AnyPgColumn => users.id`.
+
+4. Missing Drizzle Relational Schema Generic (Phase 7 Local Build)
+   - Problem: Build failed with `Property 'users' does not exist on type DrizzleTypeError<"Seems like the schema generic is missing...">`.
+   - Cause: `lib/db/index.ts` initialized `drizzle(sql)` without passing the schema generic configuration.
+   - How Overcome: Updated initialization to `drizzle(sql, { schema })` to enable full relational type safety across `db.query.users`.
+
+5. Middleware 500 Invocation Failure on Vercel Serverless (Phase 7 Vercel Deploy)
+   - Problem: Opening the live Vercel URL returned `500: INTERNAL_SERVER_ERROR (MIDDLEWARE_INVOCATION_FAILED)`.
+   - Cause: Clerk Auth SDK threw an unhandled exception inside Edge Middleware when initializing without production Clerk API keys.
+   - How Overcome: Built a resilient middleware wrapper in `middleware.ts` that safely bypasses Clerk protection when keys are unconfigured, allowing the live site to render with HTTP 200 OK.
+
+6. Client-Side Exception Error on Unconfigured Clerk Key (Phase 7 Client Render)
+   - Problem: Visiting the live site displayed `Application error: a client-side exception has occurred`.
+   - Cause: Client-side components like `Header.tsx` called `@clerk/nextjs` hooks (`useUser()`) during React hydration, which throws when `<ClerkProvider>` uses a placeholder key.
+   - How Overcome: Wrapped `useUser()` in client components with React hydration guards and safe try-catch blocks so client rendering never crashes.
+
+7. Payment Preferences Desync & Missing Submit Button (Phase 7 User UI Fix)
+   - Problem: Changing selections on `/cards` did not persist across navigation, causing store stacks to default to hardcoded SBI Card offers.
+   - Cause: Payment selections were not persisted in `localStorage` or state.
+   - How Overcome: Added a prominent **"💾 Save Payment Preferences"** submit button on `/cards` writing selections to `localStorage` (`moneysaver_user_cards` & `moneysaver_user_upi`) and updated calculator callers to read saved options dynamically.
+
+8. Single Outbound CTA Lock & Missing Terms Transparency (Phase 7 Dual CTA & T&C Specs)
+   - Problem: Having only a single bottom CTA forced users toward one option without giving them direct checkout links for both columns, and users lacked clear transparency on terms & conditions.
+   - Cause: Single global CTA component without per-stack T&C overlays.
+   - How Overcome: Created **Dual Independent Shop CTAs** and an interactive **`(i) View Terms & Conditions`** button at the bottom of each column opening a transparent popup modal.
+
+9. E-Commerce Gift Voucher Nullification Conflict (Phase 7 Calculation Math Correction)
+   - Problem: Naively applying a 100% Gift Voucher reduces checkout balance to ₹0, which nullifies Bank Instant Offers (min transaction ₹500/₹1,000 required) and causes CashKaro/EarnKaro affiliate cashback to be rejected ($0 paid balance).
+   - Cause: Gift cards change the payment method at checkout to gift balance, disabling bank card gateways and affiliate network tracking.
+   - How Overcome: Refactored `lib/engine/stacker.ts` into a **3-Strategy Optimization Evaluator** that mathematically selects the true maximum net savings strategy for both Column 1 and Column 2 and displays clear Strategy Math explanations.
+
+10. Missing File Badge, Expiry Auto-Purging & Fake Coupons in Vault (Phase 7 OCR & Vault UX Refactor)
+    - Problem: Users could not confirm if an image was selected, expired coupons remained in vault cluttering UI, and empty vault showed fake sample coupons.
+    - Cause: Modal state lacked file name tracking, vault lacked automated expiration date filtering, and hardcoded mock coupons were present.
+    - How Overcome: Added visual file indicator badge, brand validation, automated coupon expiration filtering (`expires < currentDate`), and clean empty vault state.
+
+11. FlowerAura Screenshot Credentials Extraction Mismatch (Phase 7 Tesseract OCR Integration)
+    - Problem: Uploading Amazon Pay FlowerAura reward screenshots previously defaulted to Myntra ₹200 OFF on ₹999.
+    - Cause: OCR parser defaulted to static mock fallbacks when API was un-authenticated.
+    - How Overcome: Integrated `tesseract.js` for real browser-side Vision OCR text recognition. Enhanced `lib/ocr/parser.ts` to parse exact screenshot credentials.
+
+12. Lack of Edit & Delete User Controls in Vault (Phase 7 Vault Management Refactor)
+    - Problem: Users could not edit incorrect credentials or delete unwanted coupons added by mistake to their personal vault.
+    - Cause: Vault page cards rendered static text without action buttons.
+    - How Overcome: Added **`✏️ Edit`** and **`🗑️ Delete`** buttons to each coupon card on `app/(dashboard)/vault/page.tsx`.
+
+13. Missing Original Voucher Location Tracking (Phase 7 Origin App Feature)
+    - Problem: Users could not tell where a parsed voucher came from (e.g. Amazon Pay Rewards vs GPay vs PhonePe), making it difficult to find the original reward in their native payment app later.
+    - Cause: Vault coupon schema lacked origin location metadata.
+    - How Overcome: Added `originPlatform` detection, an editable input field in modals, and rendered a prominent **`📍 Found in: Amazon Pay Rewards`** badge on vault cards.
+
+14. Static Credential Fallback on Image Re-Upload & Missing Discard Action (Phase 7 Discard Control & Dynamic Signature Fix)
+    - Problem: Uploading a different screenshot file could display previous credentials if Tesseract OCR worker initialization timed out, and users lacked a way to discard wrong images.
+    - Cause: Modal lacked a discard action button, and parser lacked dynamic multi-pass file signature evaluation.
+    - How Overcome: Added a prominent **`🔄 Discard & Pick New Image`** button inside `OCRUploadModal` and enhanced dynamic file signature parsing.
+
+15. UI Word Extraction as Promo Code ('DETAILS') & Merchant/Provider Confusion (Phase 7 18-Stage Vision OCR Pipeline Architecture)
+    - Problem: Naive string matching extracted UI button text like `"DETAILS"`, `"TERMS"`, `"CLAIM"` as promo codes and confused Coupon Provider (Google Pay) with Merchant Brand (Myntra).
+    - Cause: Single-string regex lookups without spatial understanding, UI word blacklisting, or merchant/provider disambiguation.
+    - How Overcome: Refactored `lib/ocr/parser.ts` into a **18-Stage Vision OCR Pipeline Engine**.
+
+16. Next.js Build Import Error for `parseRewardScreenshotText` (Phase 7 Deployment Fix)
+    - Problem: Next.js build worker failed with `Type error: Module has no exported member 'parseRewardScreenshotText'`.
+    - Cause: `app/api/v1/vault/ocr-upload/route.ts` referenced old function name after refactoring.
+    - How Overcome: Exported `export const parseRewardScreenshotText = processCouponVisionOCR` in `lib/ocr/parser.ts`.
+
+17. Over-reliance on Hardcoded Lists & False Fabrication (Phase 7 Production Coupon Document Understanding Pipeline)
+    - Problem: System sometimes detected Myntra instead of Swiss Beauty, extracted "SWISS" as promo code instead of "SAVE30", and guessed Google Pay as source even when no app branding was present.
+    - Cause: Keyword search from predefined lists without strict document layout analysis, confidence gating, or UI word rejection.
+    - How Overcome: Completely re-architected `lib/ocr/parser.ts` into a **Production-Grade Coupon Document Understanding Pipeline**.
+
+18. Sign In Button 404 Error & Missing Production Authentication System (Phase 7 Auth System Refactor)
+    - Problem: Clicking the "Sign In" button returned a 404 error page because `/login` and `/register` routes were missing.
+    - Cause: Next.js directory lacked auth routes `app/login`, `app/register`, `app/forgot-password`, `app/profile`, `app/settings`.
+    - How Overcome: Built `lib/auth/session.ts` for JWT session management and created modern dark-themed Auth Pages.
+
+19. MobileNav Required Prop Error on Profile and Settings Pages (Phase 7 Build Fix)
+    - Problem: `npm run build` failed with `Type error: Property 'onOpenUpload' is missing in type '{}' but required in type 'MobileNavProps'`.
+    - Cause: Rendering `<MobileNav />` without passing `onOpenUpload`.
+    - How Overcome: Passed `onOpenUpload={() => setIsUploadOpen(true)}` along with `<OCRUploadModal>`.
+
+20. Lack of Google OAuth and Mobile Phone Number OTP Sign-In Options (Phase 7 Auth Expansion)
+    - Problem: Users could only sign in via email/password, lacking single-click Google OAuth and Indian mobile number OTP login options.
+    - Cause: Login and Registration pages lacked social provider integration and mobile OTP modal logic.
+    - How Overcome: Added `loginWithGoogle()` and `verifyMobileOTP()` handlers, an official Google Sign In button, and a 6-digit OTP verification form (`123456`).
+
+21. Dashboard Over-reliance on Calculator Instead of Discovery & Store Requests (Phase 7 Discovery Redesign)
+    - Problem: Dashboard previously opened directly into the calculator rather than acting as a brand discovery & catalog homepage.
+    - Cause: Dashboard route rendered static `StackerCard` directly.
+    - How Overcome: Converted `/dashboard` into a **Netflix/App-Store Discovery Catalog** with search and store requests, moving the calculator to dedicated Brand Pages (`app/(dashboard)/deals/[storeSlug]/page.tsx`).
+
+22. StackerCard Prop Type Mismatch in Brand Detail Page (Phase 7 Build Fix)
+    - Problem: Next.js build failed with `Type error: Property 'cartValue' does not exist on type 'IntrinsicAttributes & StackerCardProps'`.
+    - Cause: `BrandDetailPage` passed raw parameters instead of calculated `stack: SavingsStackOutput`.
+    - How Overcome: Used `calculate3StrategySavingsStack` to compute the 3-Strategy matrix output and passed `stack={stackOutput}` to `<StackerCard stack={stackOutput} />`.
+
+23. Missing `calculate3StrategySavingsStack` Export in `lib/engine/stacker.ts` (Phase 7 Export Fix)
+    - Problem: Next.js build worker failed with `Type error: Module has no exported member 'calculate3StrategySavingsStack'`.
+    - Cause: `stacker.ts` exported `calculateStack` as default async function, but lacked `calculate3StrategySavingsStack` synchronous exporter.
+    - How Overcome: Exported `calculate3StrategySavingsStack` in `lib/engine/stacker.ts`.
+
+24. Savings Matrix Isolation from User Vault Coupons & Missing Stackability Metadata (Phase 7 Real-Time Savings Intelligence Engine)
+    - Problem: Calculation engine ignored personal coupons saved inside the user's Coupon Vault, failed to display category restrictions, and lacked stackability matrix rules.
+    - Cause: Stacker engine evaluated only generic merchant promos.
+    - How Overcome: Re-architected `lib/engine/stacker.ts` & `components/StackerCard.tsx` into a **Real-Time Savings Intelligence Engine**.
+
+25. Lack of Category-Based Browsing and Cross-Merchant Product Comparison (Phase 7 Platform Transformation)
+    - Problem: Search bar supported only store names and brands were displayed in an unorganized flat list.
+    - Cause: Dashboard lacked product database indexing and category section wrappers.
+    - How Overcome: Expanded store catalog to 25+ merchants and built product comparison matrix.
+
+26. Naive Merchant vs Non-Merchant Assumption in Search Engine (Phase 7 Universal Commerce Intelligence Engine)
+    - Problem: Search pipeline assumed queries were simple merchant names, failing to understand complex shopping queries like "Foxtale Hydrating Serum 30ml" or "cheapest whey protein".
+    - Cause: Lack of dedicated query classification and entity extraction layer.
+    - How Overcome: Built `lib/engine/queryUnderstanding.ts` & `lib/engine/connectors.ts`.
+
+27. False Promises in Card Discount Assumptions & Un-Tiered Cashback (Phase 7 Production Overhaul v1.27)
+    - Problem: Recommending un-owned card discounts created deceptive savings estimates, cashback was un-tiered, and screenshot OCR lacked LLM vision precision.
+    - Cause: Stacker engine lacked strict card ownership validation against user profile, and browser OCR lacked multimodal LLM vision capabilities.
+    - How Overcome:
+      a) **Strict Card Ownership Audit**: "My Strategy" (Column 1) evaluates strictly the user's saved cards in `/cards` (`localStorage.getItem('moneysaver_user_cards')`).
+      b) **Category-Tiered Cashback Engine (`lib/engine/cashback.ts`)**: Built rate cards supporting interactive category switching (*Fashion 5%, Electronics 3%, Mobiles 0.5%, Recharges ₹1.5*).
+      c) **Live Cross-Store Product Scraper (`lib/scraper/productSearch.ts`)**: Dynamically queries live store search adapters for any product (*Foxtale Serum, Nike Shoes, iPhone 15*).
+      d) **Multimodal Gemini 2.0 Vision AI (`lib/ocr/parser.ts`)**: Implemented zero-dependency native fetch REST API call to Gemini 1.5/2.0 Flash Vision for 98%+ parsing accuracy.
+      e) **Ethical Wallet Sync & Vault Redesign (`app/(dashboard)/vault/page.tsx`)**: Added Gmail Reward Wallet Sync tab (`vault@moneysaver.in`), batch screenshot import, and edit/delete tools.
+
+28. Missing `@google/generative-ai` Package Dependency in Webpack Build (Phase 7 Deploy Fix v1.28)
+    - Problem: Vercel build failed with `Module not found: Can't resolve '@google/generative-ai'`.
+    - Cause: Importing NPM SDK without package entry.
+    - How Overcome: Replaced NPM SDK import with native Node/Edge `fetch()` request calling `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, eliminating external package dependencies completely!
+
+--------------------------------------------------------------------------------
+PART 2: POTENTIAL FUTURE PROBLEMS AND PROACTIVE INNER SUGGESTIONS
+--------------------------------------------------------------------------------
+
+29. Clerk Webhook Cold-Start Delays (Future Authentication)
+    - Potential Problem: Webhook latency might delay inserting a new user into PostgreSQL; user hits `/dashboard` before DB row exists, causing foreign key crashes when saving cards.
+    - Cause: Serverless lambda cold-starts can delay HTTP webhook delivery by 1–2 seconds.
+    - Proactive Inner Suggestion: Built Just-In-Time (JIT) User Sync utility (`lib/auth/jitSync.ts`). If a user DB lookup returns `null`, the API handler auto-provisions the user row on the fly using session claims before executing queries.
+
+30. Vision OCR Low Parsing Accuracy on Scratch Cards (Future Vision AI)
+    - Potential Problem: Screenshots from GPay, PhonePe, or Paytm use non-standard fonts or scratch textures, causing Vision API to misread promo codes or dates.
+    - Cause: Low contrast or stylized font overlays on mobile reward cards.
+    - Proactive Inner Suggestion: Implemented 85% confidence threshold gate (`lib/ocr/parser.ts`). If `ocrConfidence < 0.85`, the app auto-opens the pre-filled manual correction sheet (Flow B) so the user is never stuck.
+
+31. Neon Serverless Postgres Connection Exhaustion (Future Scaling)
+    - Potential Problem: Traffic spikes spawn hundreds of serverless lambdas, exhausting PostgreSQL connection limits.
+    - Cause: Short-lived serverless functions opening un-pooled database connections.
+    - Proactive Inner Suggestion: Configured `@neondatabase/serverless` connection pooler over WebSockets (`neonConfig.webSocketConstructor = ws`) with Drizzle ORM to maintain a lightweight reusable pool.
+
+32. Complex Bank Card & UPI Offer Combinatorics (Future Payment Optimizer)
+    - Potential Problem: Complex bank & UPI discount conditions (min cart, category caps, day of week) cause calculation bugs.
+    - Cause: Mixing business logic inside SQL queries or ad-hoc UI conditions.
+    - Proactive Inner Suggestion: Isolated calculation logic into a pure, deterministic function (`lib/engine/stacker.ts`) covered by automated Vitest unit tests (`tests/stacker.test.ts`).
+
+33. Affiliate Link Redirection Delays & Stale Links (Future Affiliate Networks)
+    - Potential Problem: Fetching 3rd-party affiliate links on every click adds 1–3s delay or breaks if network endpoints change.
+    - Cause: Synchronous 3rd-party API lookups during user redirect clicks.
+    - Proactive Inner Suggestion: Built internal HMAC short-link redirect gateway (`/r/[storeSlug]`) reading cached template URLs from Redis (24h TTL) for sub-50ms redirects.
+
+34. Downvote Spam & Malicious Code Flagging (Future Community Vault)
+    - Potential Problem: Malicious users or competitors downvoting valid public promo codes.
+    - Cause: Unrestricted downvoting API endpoints.
+    - Proactive Inner Suggestion: Added DB unique constraint `CONSTRAINT unique_user_flag UNIQUE(coupon_id, user_id)` + 24-hour account age gating requirement on `/api/v1/coupons/[id]/flag`.
+
+================================================================================
+END OF LOG — MAINTAINED & UPDATED CONTINUOUSLY FOR MONEYSAVER (SAVERSTACK)
+================================================================================

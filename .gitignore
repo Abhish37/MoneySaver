@@ -1,0 +1,166 @@
+# ============================================================
+# MoneySaver — .gitignore
+# ============================================================
+
+# ------------------------------------------------------------
+# DEPENDENCIES
+# ------------------------------------------------------------
+node_modules/
+.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# ------------------------------------------------------------
+# BUILD OUTPUT
+# ------------------------------------------------------------
+dist/
+build/
+out/
+.next/
+.nuxt/
+.vite/
+*.tsbuildinfo
+
+# ------------------------------------------------------------
+# ENVIRONMENT & SECRETS
+# ⚠️  Never commit real .env files!
+# ------------------------------------------------------------
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+.env.staging
+
+# ------------------------------------------------------------
+# LOG FILES
+# ------------------------------------------------------------
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ------------------------------------------------------------
+# OS GENERATED FILES
+# ------------------------------------------------------------
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# ------------------------------------------------------------
+# IDE & EDITOR FILES
+# ------------------------------------------------------------
+# Visual Studio Code
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# JetBrains IDEs (IntelliJ, WebStorm, PyCharm, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim
+*.swp
+*.swo
+*.swn
+Session.vim
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# ------------------------------------------------------------
+# PYTHON (for scripts/ utilities)
+# ------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+ENV/
+.env/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.eggs/
+*.egg-info/
+dist/
+*.egg
+
+# ------------------------------------------------------------
+# TESTING & COVERAGE
+# ------------------------------------------------------------
+coverage/
+.coverage
+.coverage.*
+*.lcov
+.nyc_output/
+test-results/
+playwright-report/
+.jest-cache/
+
+# ------------------------------------------------------------
+# DOCKER
+# ------------------------------------------------------------
+docker-compose.override.yml
+
+# ------------------------------------------------------------
+# MISC
+# ------------------------------------------------------------
+*.pem
+*.key
+*.crt
+*.p12
+.cache/
+tmp/
+temp/
+
+.vercel
+
+# ------------------------------------------------------------
+# PROJECT-SPECIFIC IGNORES
+# ------------------------------------------------------------
+# Temporary test scripts
+test-scrape.js
+
+# Scraper debug output
+amz.html
+fk.html
+*.html.bak
+
+# Drizzle migration state (local only)
+drizzle/meta/_journal.json

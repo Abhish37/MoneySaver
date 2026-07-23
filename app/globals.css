@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-app: #FAFAFA;
+    --bg-surface: #FFFFFF;
+    --bg-surface-subtle: #F1F5F9;
+    --border-subtle: #E2E8F0;
+    --text-primary: #0F172A;
+    --text-secondary: #64748B;
+    --brand-emerald: #059669;
+    --brand-amber: #F59E0B;
+    --brand-crimson: #991B1B;
+    --brand-oxblood: #450A0A;
+  }
+
+  .dark {
+    --bg-app: #090D16;
+    --bg-surface: #111827;
+    --bg-surface-subtle: #1E293B;
+    --border-subtle: #1F2937;
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --brand-emerald: #10B981;
+    --brand-amber: #FBBF24;
+    --brand-crimson: #991B1B;
+    --brand-oxblood: #450A0A;
+  }
+
+  body {
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer utilities {
+  .glass-header {
+    backdrop-filter: blur(12px);
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  .dark .glass-header {
+    background-color: rgba(17, 24, 39, 0.8);
+  }
+  .hero-card-border {
+    border: 1px solid rgba(69, 10, 10, 0.2);
+  }
+}
