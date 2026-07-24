@@ -56,18 +56,17 @@ export default function Header() {
                 Brand Discovery
               </Link>
               <Link
-                href="/in-store"
-                className={`transition-colors ${pathname === '/in-store' ? 'text-emerald-400 font-bold' : 'text-slate-300 hover:text-white'}`}
-              >
-                In-Store
-              </Link>
-              <Link
                 href="/vault"
                 className={`transition-colors ${pathname === '/vault' ? 'text-emerald-400 font-bold' : 'text-slate-300 hover:text-white'}`}
               >
                 Coupon Vault
               </Link>
-
+              <Link
+                href="/stacker"
+                className={`transition-colors ${pathname === '/stacker' ? 'text-emerald-400 font-bold' : 'text-slate-300 hover:text-white'}`}
+              >
+                Savings Matrix
+              </Link>
               <Link
                 href="/cards"
                 className={`transition-colors ${pathname === '/cards' ? 'text-emerald-400 font-bold' : 'text-slate-300 hover:text-white'}`}

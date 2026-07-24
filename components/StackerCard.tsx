@@ -3,7 +3,6 @@
 import React, { useState } from 'react'
 import { SavingsStackOutput } from '../lib/engine/stacker'
 import Link from 'next/link'
-import CouponSlideOut from './CouponSlideOut'
 
 interface StackerCardProps {
   stack: SavingsStackOutput
@@ -16,7 +15,6 @@ export default function StackerCard({ stack, onCategoryChange }: StackerCardProp
   const [voted, setVoted] = useState<'UP' | 'DOWN' | null>(null)
   const [showAsciToast, setShowAsciToast] = useState(false)
   const [tcModalData, setTcModalData] = useState<{ title: string; terms: string[] } | null>(null)
-  const [isCouponsOpen, setIsCouponsOpen] = useState(false)
 
   const categories = [
     'Fashion & Apparel',
@@ -110,20 +108,12 @@ export default function StackerCard({ stack, onCategoryChange }: StackerCardProp
           <h3 className="text-xl font-extrabold text-slate-50 mt-1">Mathematically Optimized Stacking Strategy</h3>
         </div>
 
-        <div className="flex items-center gap-3 self-start sm:self-auto w-full sm:w-auto">
-          <button
-            onClick={() => setIsCouponsOpen(true)}
-            className="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white transition-all shadow-md shadow-emerald-950"
-          >
-            🏷️ View Coupons
-          </button>
-          <button
-            onClick={() => navigator.clipboard.writeText(window.location.href)}
-            className="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 transition-all"
-          >
-            🚀 Share Strategy
-          </button>
-        </div>
+        <button
+          onClick={() => navigator.clipboard.writeText(window.location.href)}
+          className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 transition-all self-start sm:self-auto"
+        >
+          🚀 Share Strategy
+        </button>
       </div>
 
       {/* Dynamic Product Category Cashback Selector */}
@@ -340,12 +330,6 @@ export default function StackerCard({ stack, onCategoryChange }: StackerCardProp
           </div>
         </div>
       </div>
-      
-      <CouponSlideOut
-        isOpen={isCouponsOpen}
-        onClose={() => setIsCouponsOpen(false)}
-        retailerName={stack.storeSlug}
-      />
     </div>
   )
 }
