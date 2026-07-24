@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getRedisClient } from '@/lib/redis'
+import { redis } from '@/lib/redis'
 
 export const dynamic = 'force-dynamic'
 
@@ -14,7 +14,6 @@ export async function GET(request: Request) {
     }
 
     // 1. Check Redis Cache First (6-hour TTL)
-    const redis = getRedisClient()
     const cacheKey = `ms:coupons:${retailer.toLowerCase()}`
     
     if (redis) {
