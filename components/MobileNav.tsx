@@ -13,7 +13,6 @@ export default function MobileNav({ onOpenUpload }: MobileNavProps) {
 
   const navItems = [
     { label: 'Home', href: '/dashboard', icon: '🏠' },
-    { label: 'Stacker', href: '/stacker', icon: '⚡' },
     { label: 'Vault', href: '/vault', icon: '🎟️' },
     { label: 'In-Store', href: '/in-store', icon: '🏪' },
     { label: 'Cards', href: '/cards', icon: '💳' },

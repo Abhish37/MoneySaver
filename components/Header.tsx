@@ -67,12 +67,7 @@ export default function Header() {
               >
                 Coupon Vault
               </Link>
-              <Link
-                href="/stacker"
-                className={`transition-colors ${pathname === '/stacker' ? 'text-emerald-400 font-bold' : 'text-slate-300 hover:text-white'}`}
-              >
-                Savings Matrix
-              </Link>
+
               <Link
                 href="/cards"
                 className={`transition-colors ${pathname === '/cards' ? 'text-emerald-400 font-bold' : 'text-slate-300 hover:text-white'}`}
