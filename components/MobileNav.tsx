@@ -3,6 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useCart } from './CartProvider'
 
 interface MobileNavProps {
   onOpenUpload: () => void
@@ -10,12 +11,13 @@ interface MobileNavProps {
 
 export default function MobileNav({ onOpenUpload }: MobileNavProps) {
   const pathname = usePathname()
+  const { itemCount } = useCart()
 
   const navItems = [
     { label: 'Home', href: '/dashboard', icon: '🏠' },
-    { label: 'Stacker', href: '/stacker', icon: '⚡' },
+    { label: 'Store', href: '/store', icon: '🏪' },
+    { label: 'Cart', href: '/cart', icon: '🛒' },
     { label: 'Vault', href: '/vault', icon: '🎟️' },
-    { label: 'Cards', href: '/cards', icon: '💳' },
   ]
 
   return (
@@ -52,11 +54,18 @@ export default function MobileNav({ onOpenUpload }: MobileNavProps) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
+              className={`relative flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
                 isActive ? 'text-emerald-400' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              <span className="text-lg">{item.icon}</span>
+              <span className="text-lg relative">
+                {item.icon}
+                {item.href === '/cart' && itemCount > 0 && (
+                  <span className="absolute -top-1 -right-2 px-1 py-0.5 rounded-full bg-emerald-500 text-white font-bold font-mono text-[9px] min-w-[16px] text-center">
+                    {itemCount}
+                  </span>
+                )}
+              </span>
               <span>{item.label}</span>
             </Link>
           )

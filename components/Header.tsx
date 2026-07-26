@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
 import { getAuthSession, logoutUser, UserProfile } from '../lib/auth/session'
+import { useCart } from './CartProvider'
 
 export default function Header() {
   const router = useRouter()
@@ -11,6 +12,7 @@ export default function Header() {
   const [user, setUser] = useState<UserProfile | null>(null)
   const [mounted, setMounted] = useState(false)
   const [requestCount, setRequestCount] = useState(0)
+  const { itemCount } = useCart()
 
   useEffect(() => {
     setMounted(true)
@@ -54,6 +56,12 @@ export default function Header() {
                 className={`transition-colors ${pathname === '/dashboard' ? 'text-emerald-400 font-bold' : 'text-slate-300 hover:text-white'}`}
               >
                 Brand Discovery
+              </Link>
+              <Link
+                href="/store"
+                className={`transition-colors ${pathname === '/store' ? 'text-emerald-400 font-bold' : 'text-slate-300 hover:text-white'}`}
+              >
+                Store 🏪
               </Link>
               <Link
                 href="/vault"
@@ -101,6 +109,17 @@ export default function Header() {
                   </span>
                 )}
               </div>
+
+              <Link href="/cart" className="relative group cursor-pointer" title="View Cart">
+                <span className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 block text-xs group-hover:border-emerald-500/50 transition-colors">
+                  🛒
+                </span>
+                {itemCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 px-1.5 py-0.5 rounded-full bg-emerald-500 text-white font-bold font-mono text-[10px] animate-pulse">
+                    {itemCount}
+                  </span>
+                )}
+              </Link>
 
               <Link
                 href="/profile"

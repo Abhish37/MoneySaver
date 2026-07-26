@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google'
+import { CartProvider } from '@/components/CartProvider'
 import './globals.css'
 
 const sans = Plus_Jakarta_Sans({
@@ -34,7 +35,9 @@ export default function RootLayout({
     return (
       <html lang="en" className={`${sans.variable} ${mono.variable}`}>
         <body className="antialiased min-h-screen flex flex-col">
-          {children}
+          <CartProvider>
+            {children}
+          </CartProvider>
         </body>
       </html>
     )
@@ -44,7 +47,9 @@ export default function RootLayout({
     <ClerkProvider publishableKey={rawKey}>
       <html lang="en" className={`${sans.variable} ${mono.variable}`}>
         <body className="antialiased min-h-screen flex flex-col">
-          {children}
+          <CartProvider>
+            {children}
+          </CartProvider>
         </body>
       </html>
     </ClerkProvider>
