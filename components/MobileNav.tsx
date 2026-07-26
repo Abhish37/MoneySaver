@@ -19,7 +19,6 @@ export default function MobileNav({ onOpenUpload }: MobileNavProps) {
     { label: 'Stacker', href: '/stacker', icon: '⚡' },
     { label: 'Vault', href: '/vault', icon: '🎟️' },
     { label: 'Cards', href: '/cards', icon: '💳' },
-    { label: 'Cart', href: '/cart', icon: '🛒' },
   ]
 
   return (

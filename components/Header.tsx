@@ -110,17 +110,6 @@ export default function Header() {
                 )}
               </div>
 
-              <Link href="/cart" className="relative group cursor-pointer" title="View Cart">
-                <span className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 block text-xs group-hover:border-emerald-500/50 transition-colors">
-                  🛒
-                </span>
-                {itemCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 px-1.5 py-0.5 rounded-full bg-emerald-500 text-white font-bold font-mono text-[10px] animate-pulse">
-                    {itemCount}
-                  </span>
-                )}
-              </Link>
-
               <Link
                 href="/profile"
                 className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-emerald-500/50 text-xs font-semibold text-slate-200 transition-all"

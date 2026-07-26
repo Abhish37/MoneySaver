@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 import { useCart, Product } from '@/components/CartProvider'
 
 // MOCK API DATA
@@ -17,7 +18,7 @@ const CATEGORIES = ['All', 'Vegetables', 'Dairy', 'Snacks', 'Beverages', 'Grocer
 
 export default function StorePage() {
   const [activeCategory, setActiveCategory] = useState('All')
-  const { addToCart, items, updateQuantity } = useCart()
+  const { addToCart, items, updateQuantity, itemCount, cartTotal } = useCart()
 
   const filteredProducts = activeCategory === 'All' 
     ? MOCK_PRODUCTS 
@@ -26,8 +27,24 @@ export default function StorePage() {
   return (
     <div className="min-h-screen bg-slate-50 pb-24">
       {/* Top Hero Banner */}
-      <div className="bg-emerald-600 text-white pt-10 pb-16 px-4">
-        <div className="max-w-5xl mx-auto text-center space-y-4">
+      <div className="bg-emerald-600 text-white pt-6 pb-16 px-4 relative">
+        {/* Cart Icon in Top Right */}
+        <div className="absolute top-6 right-4 sm:right-8 z-10">
+          <Link href="/cart" className="relative flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl backdrop-blur-md border border-white/20 transition-all shadow-lg group">
+            <span className="text-xl">🛒</span>
+            <div className="flex flex-col items-start">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-100 leading-none">Cart</span>
+              <span className="font-black leading-none">₹{cartTotal}</span>
+            </div>
+            {itemCount > 0 && (
+              <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-amber-400 text-slate-900 font-bold text-xs flex items-center justify-center animate-bounce shadow-md">
+                {itemCount}
+              </span>
+            )}
+          </Link>
+        </div>
+
+        <div className="max-w-5xl mx-auto text-center space-y-4 mt-6">
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight">SuperMart 🏪</h1>
           <p className="text-emerald-100 font-medium text-lg">
             Fresh groceries and daily essentials delivered in minutes.
