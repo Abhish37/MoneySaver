@@ -58,12 +58,6 @@ export default function Header() {
                 Brand Discovery
               </Link>
               <Link
-                href="/store"
-                className={`transition-colors ${pathname === '/store' ? 'text-emerald-400 font-bold' : 'text-slate-300 hover:text-white'}`}
-              >
-                Store 🏪
-              </Link>
-              <Link
                 href="/vault"
                 className={`transition-colors ${pathname === '/vault' ? 'text-emerald-400 font-bold' : 'text-slate-300 hover:text-white'}`}
               >
@@ -109,6 +103,14 @@ export default function Header() {
                   </span>
                 )}
               </div>
+
+              {/* SuperMart Standalone Access */}
+              <Link
+                href="/store"
+                className="px-3 py-1.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 hover:bg-emerald-900/60 text-emerald-400 text-xs font-bold transition-all shadow-[0_0_10px_rgba(16,185,129,0.1)] hover:shadow-[0_0_15px_rgba(16,185,129,0.2)]"
+              >
+                SuperMart 🏪
+              </Link>
 
               <Link
                 href="/profile"
