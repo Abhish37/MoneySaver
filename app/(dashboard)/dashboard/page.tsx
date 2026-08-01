@@ -43,24 +43,24 @@ export default function DashboardPage() {
     } catch (e) {}
   }, [router])
 
-  // ── Search triggered only on button press or Enter key ─────────────────────
-  const handleSearch = async () => {
-    const query = searchQuery.trim()
-    if (query.length < 2) return
+  // ── Single unified search runner ───────────────────────────────────────────
+  const runSearch = async (query: string) => {
+    const q = query.trim()
+    if (q.length < 2) return
 
     setIsSearching(true)
-    setSubmittedQuery(query)
+    setSubmittedQuery(q)
+    setSearchQuery(q)
     setLiveSearchResults([])
     setSearchSource(null)
 
     try {
-      const results = await searchRealtimeProducts(query)
+      const results = await searchRealtimeProducts(q)
       setLiveSearchResults(results)
       setSearchSource(results[0]?.source ?? null)
 
-      // Save to recent searches
-      if (query.length >= 3 && !recentSearches.includes(query)) {
-        const updated = [query, ...recentSearches.slice(0, 4)]
+      if (q.length >= 3 && !recentSearches.includes(q)) {
+        const updated = [q, ...recentSearches.slice(0, 4)]
         setRecentSearches(updated)
         try { localStorage.setItem('moneysaver_recent_searches', JSON.stringify(updated)) } catch (e) {}
       }
@@ -71,8 +71,9 @@ export default function DashboardPage() {
     }
   }
 
+  const handleSearch = () => runSearch(searchQuery)
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') handleSearch()
+    if (e.key === 'Enter') runSearch(searchQuery)
   }
 
   const handleClearSearch = () => {
@@ -83,20 +84,7 @@ export default function DashboardPage() {
     inputRef.current?.focus()
   }
 
-  const handleTrendingClick = (term: string) => {
-    setSearchQuery(term)
-    // Immediately trigger search for trending taps
-    setTimeout(() => {
-      setIsSearching(true)
-      setSubmittedQuery(term)
-      setLiveSearchResults([])
-      searchRealtimeProducts(term).then(results => {
-        setLiveSearchResults(results)
-        setSearchSource(results[0]?.source ?? null)
-        setIsSearching(false)
-      }).catch(() => setIsSearching(false))
-    }, 50)
-  }
+  const handleTrendingClick = (term: string) => runSearch(term)
 
   // Filter stores for brand discovery grid
   const filteredStores = EXPANDED_STORES.filter((store) => {

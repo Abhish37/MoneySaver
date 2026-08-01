@@ -1,11 +1,28 @@
 'use client'
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import Link from 'next/link'
 import { useCart } from '@/components/CartProvider'
 
+interface Platform {
+  name: string
+  total: number
+  delivery: number
+  offer: string
+  tag: string
+}
+
 export default function CartPage() {
   const { items, updateQuantity, removeFromCart, cartTotal, itemCount } = useCart()
+
+  // Re-computed only when cartTotal changes, not on every render
+  const platforms = useMemo<Platform[]>(() => {
+    return [
+      { name: 'SuperMart',    total: cartTotal + 40,           delivery: 40, offer: 'None',          tag: 'Fastest' },
+      { name: 'GroceryPlus', total: cartTotal * 1.05 + 15,    delivery: 15, offer: 'Low Delivery',   tag: 'Cheapest Delivery' },
+      { name: 'QuickBite',   total: cartTotal * 0.95 + 60,    delivery: 60, offer: '5% OFF Cart',    tag: 'Best Discount' },
+    ].sort((a, b) => a.total - b.total)
+  }, [cartTotal])
 
   if (itemCount === 0) {
     return (
@@ -16,7 +33,10 @@ export default function CartPage() {
           <p className="text-slate-500 font-medium mb-8">
             Looks like you haven't added anything to your cart yet.
           </p>
-          <Link href="/store" className="inline-block px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-colors">
+          <Link
+            href="/store"
+            className="inline-block px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-colors"
+          >
             Start Shopping
           </Link>
         </div>
@@ -24,22 +44,11 @@ export default function CartPage() {
     )
   }
 
-  // Price Comparison Logic for 3 Mock Platforms
-  const platformA_Total = cartTotal + 40 // SuperMart (base + 40 delivery)
-  const platformB_Total = cartTotal * 1.05 + 15 // GroceryPlus (5% markup + 15 delivery)
-  const platformC_Total = cartTotal * 0.95 + 60 // QuickBite (5% discount + 60 delivery)
-
-  const platforms = [
-    { name: 'SuperMart', total: platformA_Total, delivery: 40, offer: 'None', tag: 'Fastest' },
-    { name: 'GroceryPlus', total: platformB_Total, delivery: 15, offer: 'Low Delivery', tag: 'Cheapest Delivery' },
-    { name: 'QuickBite', total: platformC_Total, delivery: 60, offer: '5% OFF Cart', tag: 'Best Discount' },
-  ].sort((a, b) => a.total - b.total)
-
   return (
     <div className="min-h-screen bg-slate-50 pb-24 text-slate-900 pt-8">
       <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Left Col: Cart Items */}
+
+        {/* Cart Items */}
         <div className="lg:col-span-2 space-y-6">
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-black tracking-tight">Shopping Cart</h1>
@@ -54,7 +63,7 @@ export default function CartPage() {
                 <div className="w-20 h-20 sm:w-24 sm:h-24 bg-slate-50 rounded-xl overflow-hidden shrink-0 border border-slate-100 p-2">
                   <img src={item.imageUrl} alt={item.title} className="w-full h-full object-contain mix-blend-multiply" />
                 </div>
-                
+
                 <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
                     <h3 className="font-bold text-slate-800 text-lg leading-tight">{item.title}</h3>
@@ -83,14 +92,20 @@ export default function CartPage() {
           </div>
         </div>
 
-        {/* Right Col: Price Matrix */}
+        {/* Price Comparison Matrix */}
         <div className="space-y-6">
           <h2 className="text-2xl font-black tracking-tight">Price Comparison</h2>
-          
+
           <div className="space-y-4">
             {platforms.map((plat, idx) => (
-              <div key={plat.name} className={`relative bg-white rounded-3xl p-6 border-2 transition-all ${idx === 0 ? 'border-emerald-500 shadow-lg shadow-emerald-500/10' : 'border-slate-100 shadow-sm'}`}>
-                
+              <div
+                key={plat.name}
+                className={`relative bg-white rounded-3xl p-6 border-2 transition-all ${
+                  idx === 0
+                    ? 'border-emerald-500 shadow-lg shadow-emerald-500/10'
+                    : 'border-slate-100 shadow-sm'
+                }`}
+              >
                 {idx === 0 && (
                   <span className="absolute -top-3 left-6 px-3 py-1 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-wider rounded-full shadow-sm">
                     Best Price
@@ -104,9 +119,7 @@ export default function CartPage() {
                       {plat.tag}
                     </p>
                   </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-black text-slate-900">₹{Math.round(plat.total)}</div>
-                  </div>
+                  <div className="text-2xl font-black text-slate-900">₹{Math.round(plat.total)}</div>
                 </div>
 
                 <div className="space-y-2 text-sm text-slate-500 font-medium">
@@ -124,15 +137,18 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                <button className={`w-full mt-6 h-12 rounded-xl font-bold transition-colors ${idx === 0 ? 'bg-emerald-600 hover:bg-emerald-500 text-white' : 'bg-slate-900 hover:bg-slate-800 text-white'}`}>
+                <button className={`w-full mt-6 h-12 rounded-xl font-bold transition-colors ${
+                  idx === 0
+                    ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                    : 'bg-slate-900 hover:bg-slate-800 text-white'
+                }`}>
                   Checkout at {plat.name}
                 </button>
-
               </div>
             ))}
           </div>
-
         </div>
+
       </div>
     </div>
   )
