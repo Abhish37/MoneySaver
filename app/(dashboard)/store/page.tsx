@@ -53,22 +53,24 @@ export default function StorePage() {
         </div>
       </div>
 
-      {/* Category Filters */}
-      <div className="max-w-5xl mx-auto px-4 -mt-6">
-        <div className="flex overflow-x-auto gap-3 pb-4">
-          {STORE_CATEGORIES.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`whitespace-nowrap px-6 py-2.5 rounded-full font-bold shadow-md transition-all ${
-                activeCategory === cat
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-white text-slate-600 hover:bg-emerald-50 hover:text-emerald-700'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+      {/* Category Filters — sticky bar below the hero */}
+      <div className="sticky top-0 z-20 bg-white shadow-sm border-b border-slate-100">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="flex overflow-x-auto gap-3 py-3 scrollbar-none">
+            {STORE_CATEGORIES.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`whitespace-nowrap px-5 py-2 rounded-full font-bold text-sm shadow-sm transition-all flex-shrink-0 ${
+                  activeCategory === cat
+                    ? 'bg-slate-900 text-white shadow-md'
+                    : 'bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
