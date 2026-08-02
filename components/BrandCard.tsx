@@ -3,6 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { Store } from '../lib/data/stores'
+import { CouponIcon, GiftCardIcon } from './icons'
 
 interface BrandCardProps {
   store: Store
@@ -26,7 +27,7 @@ export default function BrandCard({ store }: BrandCardProps) {
         </div>
 
         {/* Brand Name & Category */}
-        <h3 className="text-base font-bold text-slate-100 group-hover:text-emerald-400 transition-colors flex items-center gap-1.5">
+        <h3 className="text-base font-bold text-slate-100 group-hover:text-emerald-400 transition-colors font-['Outfit',sans-serif] tracking-tight flex items-center gap-1.5">
           {store.name}
           <span className="text-xs text-slate-500 font-normal">↗</span>
         </h3>
@@ -43,10 +44,12 @@ export default function BrandCard({ store }: BrandCardProps) {
       {/* Footer Feature Badges */}
       <div className="mt-4 pt-4 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
         <span className="flex items-center gap-1 font-mono">
-          🎟️ <strong>{store.supportedCoupons}</strong> Coupons
+          <CouponIcon size={12} className="text-amber-400" />
+          <strong className="text-amber-400">{store.supportedCoupons}</strong> Coupons
         </span>
-        <span className="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-[10px] text-slate-300 font-mono">
-          🎫 {store.giftCardDiscountPct}% Voucher
+        <span className="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-[10px] text-slate-300 font-mono flex items-center gap-1">
+          <GiftCardIcon size={11} className="text-purple-400" />
+          {store.giftCardDiscountPct}% Voucher
         </span>
       </div>
     </Link>

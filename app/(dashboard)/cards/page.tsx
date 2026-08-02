@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Header from '../../../components/Header'
 import MobileNav from '../../../components/MobileNav'
 import OCRUploadModal from '../../../components/OCRUploadModal'
+import { getStorage, setStorage } from '../../../lib/utils/storage'
 
 const BANK_CARDS = [
   { bankName: 'SBI Card', cardName: 'Cashback SBI Card', cardType: 'CREDIT', icon: '💳' },
@@ -33,22 +34,10 @@ export default function CardsPage() {
 
   // Load saved preferences from localStorage on page mount
   useEffect(() => {
-    try {
-      const savedCards = localStorage.getItem('moneysaver_user_cards')
-      const savedUpi = localStorage.getItem('moneysaver_user_upi')
-      if (savedCards) {
-        setSelectedCards(JSON.parse(savedCards))
-      } else {
-        setSelectedCards(['Cashback SBI Card', 'Millennia Credit Card'])
-      }
-      if (savedUpi) {
-        setSelectedUpi(JSON.parse(savedUpi))
-      } else {
-        setSelectedUpi(['Google Pay (GPay)', 'PhonePe', 'Navi UPI'])
-      }
-    } catch (err) {
-      console.error(err)
-    }
+    const savedCards = getStorage<string[]>('moneysaver_user_cards', ['Cashback SBI Card', 'Millennia Credit Card'])
+    const savedUpi = getStorage<string[]>('moneysaver_user_upi', ['Google Pay (GPay)', 'PhonePe', 'Navi UPI'])
+    setSelectedCards(savedCards)
+    setSelectedUpi(savedUpi)
   }, [])
 
   const toggleCard = (cardName: string) => {
@@ -66,11 +55,9 @@ export default function CardsPage() {
   const handleSavePreferences = async () => {
     setSaving(true)
     try {
-      // 1. Save to browser localStorage so calculation views use these exact selections
-      localStorage.setItem('moneysaver_user_cards', JSON.stringify(selectedCards))
-      localStorage.setItem('moneysaver_user_upi', JSON.stringify(selectedUpi))
+      setStorage('moneysaver_user_cards', selectedCards)
+      setStorage('moneysaver_user_upi', selectedUpi)
 
-      // 2. Sync to API endpoint
       const cardsToSave = BANK_CARDS.filter((c) => selectedCards.includes(c.cardName))
       await fetch('/api/v1/user/cards', {
         method: 'POST',

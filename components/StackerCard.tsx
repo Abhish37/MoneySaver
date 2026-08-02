@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { SavingsStackOutput } from '../lib/engine/stacker'
 import Link from 'next/link'
+import { ShareIcon, InfoIcon, CouponIcon, GiftCardIcon, BankIcon, CashbackIcon, TagIcon, SparkleIcon } from './icons'
 
 interface StackerCardProps {
   stack: SavingsStackOutput
@@ -51,8 +52,8 @@ export default function StackerCard({ stack, onCategoryChange }: StackerCardProp
       {/* ASCI Interstitial Toast */}
       {showAsciToast && (
         <div className="absolute inset-x-4 top-4 z-50 p-3.5 bg-slate-950 border border-emerald-500/50 rounded-2xl text-center shadow-2xl animate-fade-in">
-          <p className="text-xs font-bold text-emerald-400">
-            📢 Redirecting to {stack.storeSlug.toUpperCase()} via CashKaro/EarnKaro partner link...
+          <p className="text-xs font-bold text-emerald-400 flex items-center justify-center gap-1.5">
+            <SparkleIcon size={12} /> Redirecting to {stack.storeSlug.toUpperCase()} via CashKaro/EarnKaro partner link...
           </p>
           <p className="text-[11px] text-slate-400 mt-0.5">
             ASCI Disclosure: We may earn an affiliate commission at no extra cost to you.
@@ -71,7 +72,7 @@ export default function StackerCard({ stack, onCategoryChange }: StackerCardProp
               ✕
             </button>
             <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
-              <span className="text-amber-400 text-xl">ℹ️</span>
+              <InfoIcon size={18} className="text-amber-400" />
               <h4 className="font-bold text-sm text-slate-100">{tcModalData.title} Terms & Conditions</h4>
             </div>
 
@@ -110,9 +111,9 @@ export default function StackerCard({ stack, onCategoryChange }: StackerCardProp
 
         <button
           onClick={() => navigator.clipboard.writeText(window.location.href)}
-          className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 transition-all self-start sm:self-auto"
+          className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 transition-all self-start sm:self-auto flex items-center gap-1.5"
         >
-          🚀 Share Strategy
+          <ShareIcon size={13} /> Share Strategy
         </button>
       </div>
 
@@ -120,7 +121,7 @@ export default function StackerCard({ stack, onCategoryChange }: StackerCardProp
       <div className="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl space-y-3">
         <div className="flex items-center justify-between text-xs">
           <span className="font-bold text-slate-300 flex items-center gap-1.5">
-            <span>🏷️</span> Select Product Category for Accurate Tiered Cashback:
+            <TagIcon size={13} className="text-amber-400" /> Select Product Category for Accurate Tiered Cashback:
           </span>
           <span className="text-[11px] text-emerald-400 font-mono">Active: {stack.selectedCategoryName}</span>
         </div>
@@ -176,8 +177,8 @@ export default function StackerCard({ stack, onCategoryChange }: StackerCardProp
             )}
 
             {/* Strategy Reasoning Explainability Banner */}
-            <p className="text-[11px] text-slate-300 mb-4 bg-slate-900/90 p-3 rounded-xl border border-slate-800/80 leading-relaxed">
-              💡 <strong>Why Selected:</strong> {stack.userStack.explanation}
+            <p className="text-[11px] text-slate-300 mb-4 bg-slate-900/90 p-3 rounded-xl border border-slate-800/80 leading-relaxed flex gap-1.5">
+              <SparkleIcon size={12} className="text-amber-400 flex-shrink-0 mt-0.5" /><span><strong>Why Selected:</strong> {stack.userStack.explanation}</span>
             </p>
 
             {/* Line Items Breakdown */}
@@ -186,7 +187,7 @@ export default function StackerCard({ stack, onCategoryChange }: StackerCardProp
                 <div key={idx} className="bg-slate-900/70 p-3.5 rounded-xl border border-slate-800/80 text-xs space-y-2">
                   <div className="flex items-center justify-between font-bold">
                     <span className="text-slate-100 flex items-center gap-1.5">
-                      {item.layer === 'VAULT_COUPON' && '🔥'}
+                      {item.layer === 'VAULT_COUPON' && <SparkleIcon size={12} className="text-amber-400" />}
                       {item.name}
                     </span>
                     <span className="font-mono text-emerald-400 font-extrabold">- ₹{item.amountSaved.toFixed(2)}</span>
@@ -196,16 +197,16 @@ export default function StackerCard({ stack, onCategoryChange }: StackerCardProp
                   {/* Stackability Rules */}
                   {item.stackability && (
                     <div className="flex items-center gap-2 pt-1 border-t border-slate-800/80 text-[10px] font-mono text-slate-400">
-                      <span className={item.stackability.giftCard ? 'text-emerald-400' : 'text-slate-500'}>
-                        🎁 Gift Card: {item.stackability.giftCard ? 'YES' : 'NO'}
+                      <span className={`flex items-center gap-0.5 ${item.stackability.giftCard ? 'text-emerald-400' : 'text-slate-500'}`}>
+                        <GiftCardIcon size={11} /> GC: {item.stackability.giftCard ? 'YES' : 'NO'}
                       </span>
                       <span>•</span>
-                      <span className={item.stackability.bankOffer ? 'text-emerald-400' : 'text-slate-500'}>
-                        💳 Bank Offer: {item.stackability.bankOffer ? 'YES' : 'NO'}
+                      <span className={`flex items-center gap-0.5 ${item.stackability.bankOffer ? 'text-emerald-400' : 'text-slate-500'}`}>
+                        <BankIcon size={11} /> Bank: {item.stackability.bankOffer ? 'YES' : 'NO'}
                       </span>
                       <span>•</span>
-                      <span className={item.stackability.cashback ? 'text-emerald-400' : 'text-slate-500'}>
-                        💰 Cashback: {item.stackability.cashback ? 'YES' : 'NO'}
+                      <span className={`flex items-center gap-0.5 ${item.stackability.cashback ? 'text-emerald-400' : 'text-slate-500'}`}>
+                        <CashbackIcon size={11} /> CB: {item.stackability.cashback ? 'YES' : 'NO'}
                       </span>
                     </div>
                   )}
@@ -213,16 +214,12 @@ export default function StackerCard({ stack, onCategoryChange }: StackerCardProp
                   {/* Coupon Code Upvote & Verification */}
                   {item.code && (
                     <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-slate-800 text-[10px]">
-                      <span className="px-2 py-0.5 rounded bg-slate-800 text-amber-400 font-mono font-bold">
-                        {item.code}
+                      <span className="px-2 py-0.5 rounded bg-slate-800 text-amber-400 font-mono font-bold flex items-center gap-1">
+                        <CouponIcon size={11} /> {item.code}
                       </span>
                       <div className="flex items-center gap-2">
-                        <button onClick={handleUpvote} className="text-slate-400 hover:text-emerald-400">
-                          Works 👍 {upvotes}
-                        </button>
-                        <button onClick={handleDownvote} className="text-slate-400 hover:text-red-400">
-                          Expired 👎 {downvotes}
-                        </button>
+                        <button onClick={handleUpvote} className="text-slate-400 hover:text-emerald-400">Works ▲ {upvotes}</button>
+                        <button onClick={handleDownvote} className="text-slate-400 hover:text-red-400">Expired ▼ {downvotes}</button>
                       </div>
                     </div>
                   )}
@@ -253,7 +250,7 @@ export default function StackerCard({ stack, onCategoryChange }: StackerCardProp
               onClick={() => setTcModalData({ title: stack.userStack.title, terms: stack.userStack.termsAndConditions })}
               className="w-full text-center text-[11px] text-slate-400 hover:text-amber-400 flex items-center justify-center gap-1 py-1 transition-colors"
             >
-              <span>ℹ️</span> <u>View Terms & Conditions (T&C)</u>
+              <InfoIcon size={12} /> <u>View Terms & Conditions (T&C)</u>
             </button>
           </div>
         </div>
@@ -270,8 +267,8 @@ export default function StackerCard({ stack, onCategoryChange }: StackerCardProp
               </span>
             </div>
 
-            <p className="text-[11px] text-slate-300 mb-4 bg-slate-900/90 p-3 rounded-xl border border-slate-800/80 leading-relaxed">
-              💡 <strong>Why Selected:</strong> {stack.maxMarketStack.explanation}
+            <p className="text-[11px] text-slate-300 mb-4 bg-slate-900/90 p-3 rounded-xl border border-slate-800/80 leading-relaxed flex gap-1.5">
+              <SparkleIcon size={12} className="text-amber-400 flex-shrink-0 mt-0.5" /><span><strong>Why Selected:</strong> {stack.maxMarketStack.explanation}</span>
             </p>
 
             <div className="space-y-3">
@@ -285,16 +282,16 @@ export default function StackerCard({ stack, onCategoryChange }: StackerCardProp
 
                   {item.stackability && (
                     <div className="flex items-center gap-2 pt-1 border-t border-slate-800/80 text-[10px] font-mono text-slate-400">
-                      <span className={item.stackability.giftCard ? 'text-amber-400' : 'text-slate-500'}>
-                        🎁 Gift Card: {item.stackability.giftCard ? 'YES' : 'NO'}
+                      <span className={`flex items-center gap-0.5 ${item.stackability.giftCard ? 'text-amber-400' : 'text-slate-500'}`}>
+                        <GiftCardIcon size={11} /> GC: {item.stackability.giftCard ? 'YES' : 'NO'}
                       </span>
                       <span>•</span>
-                      <span className={item.stackability.bankOffer ? 'text-amber-400' : 'text-slate-500'}>
-                        💳 Bank Offer: {item.stackability.bankOffer ? 'YES' : 'NO'}
+                      <span className={`flex items-center gap-0.5 ${item.stackability.bankOffer ? 'text-amber-400' : 'text-slate-500'}`}>
+                        <BankIcon size={11} /> Bank: {item.stackability.bankOffer ? 'YES' : 'NO'}
                       </span>
                       <span>•</span>
-                      <span className={item.stackability.cashback ? 'text-amber-400' : 'text-slate-500'}>
-                        💰 Cashback: {item.stackability.cashback ? 'YES' : 'NO'}
+                      <span className={`flex items-center gap-0.5 ${item.stackability.cashback ? 'text-amber-400' : 'text-slate-500'}`}>
+                        <CashbackIcon size={11} /> CB: {item.stackability.cashback ? 'YES' : 'NO'}
                       </span>
                     </div>
                   )}
@@ -325,7 +322,7 @@ export default function StackerCard({ stack, onCategoryChange }: StackerCardProp
               onClick={() => setTcModalData({ title: stack.maxMarketStack.title, terms: stack.maxMarketStack.termsAndConditions })}
               className="w-full text-center text-[11px] text-slate-400 hover:text-amber-400 flex items-center justify-center gap-1 py-1 transition-colors"
             >
-              <span>ℹ️</span> <u>View Terms & Conditions (T&C)</u>
+              <InfoIcon size={12} /> <u>View Terms & Conditions (T&C)</u>
             </button>
           </div>
         </div>

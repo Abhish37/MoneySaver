@@ -1,22 +1,31 @@
 import type { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
-import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google'
+import { Outfit, JetBrains_Mono } from 'next/font/google'
 import { CartProvider } from '@/components/CartProvider'
 import './globals.css'
 
-const sans = Plus_Jakarta_Sans({
+const outfit = Outfit({
   subsets: ['latin'],
   variable: '--font-sans',
+  display: 'swap',
 })
 
 const mono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono',
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
-  title: 'MoneySaver (SaverStack) — Maximize Your Online Savings',
-  description: 'Stack coupons, bank offers, affiliate cashbacks, and discounted gift vouchers in one click.',
+  title: 'MoneySaver — Stack Coupons, Cashback & Bank Offers in One Click',
+  description:
+    'MoneySaver automatically layers store coupons, bank card instant discounts, affiliate cashbacks, and discounted gift vouchers into a transparent Net Payable Price Matrix.',
+  keywords: 'money saver, coupons, cashback, bank offers, gift cards, savings, india shopping deals',
+  openGraph: {
+    title: 'MoneySaver — Maximize Your Online Savings',
+    description: 'Find the best price across stores and stack every discount layer.',
+    type: 'website',
+  },
 }
 
 export default function RootLayout({
@@ -33,7 +42,7 @@ export default function RootLayout({
 
   if (!isValidClerkKey) {
     return (
-      <html lang="en" className={`${sans.variable} ${mono.variable}`}>
+      <html lang="en" className={`${outfit.variable} ${mono.variable}`}>
         <body className="antialiased min-h-screen flex flex-col">
           <CartProvider>
             {children}
@@ -45,7 +54,7 @@ export default function RootLayout({
 
   return (
     <ClerkProvider publishableKey={rawKey}>
-      <html lang="en" className={`${sans.variable} ${mono.variable}`}>
+      <html lang="en" className={`${outfit.variable} ${mono.variable}`}>
         <body className="antialiased min-h-screen flex flex-col">
           <CartProvider>
             {children}

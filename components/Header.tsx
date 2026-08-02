@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
 import { getAuthSession, logoutUser, UserProfile } from '../lib/auth/session'
+import { CoinStackIcon, BellIcon } from './icons'
 
 export default function Header() {
   const router = useRouter()
@@ -37,12 +38,14 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         
         {/* Brand Logo */}
-        <Link href={user ? '/dashboard' : '/'} className="flex items-center gap-2 font-mono font-extrabold text-xl tracking-wider group">
-          <span className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 group-hover:scale-105 transition-transform">
-            💰
+        <Link href={user ? '/dashboard' : '/'} className="flex items-center gap-2.5 group" aria-label="Money Saver Home">
+          <span className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all duration-200">
+            <CoinStackIcon size={20} />
           </span>
-          <span className="text-emerald-400">Saver</span>
-          <span className="text-amber-400">Stack</span>
+          <span className="font-extrabold text-xl tracking-tight">
+            <span className="text-emerald-400 font-['Outfit',sans-serif]">Money</span>
+            <span className="text-amber-400 font-['Outfit',sans-serif]">Saver</span>
+          </span>
         </Link>
 
         {/* Navigation Links */}
@@ -71,7 +74,7 @@ export default function Header() {
                 href="/cards"
                 className={`transition-colors ${pathname === '/cards' ? 'text-emerald-400 font-bold' : 'text-slate-300 hover:text-white'}`}
               >
-                Cards & UPI
+                Cards &amp; UPI
               </Link>
             </>
           ) : (
@@ -90,10 +93,10 @@ export default function Header() {
         <div className="flex items-center gap-3">
           {user ? (
             <div className="flex items-center gap-3">
-              {/* Developer Notification Ring Bell */}
+              {/* Developer Notification Bell */}
               <div className="relative group cursor-pointer" title="Store Integration Requests">
-                <span className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 block text-xs">
-                  🔔
+                <span className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 flex items-center justify-center w-9 h-9 hover:border-slate-700 transition-colors">
+                  <BellIcon size={16} />
                 </span>
                 {requestCount > 0 && (
                   <span className="absolute -top-1.5 -right-1.5 px-1.5 py-0.5 rounded-full bg-amber-500 text-slate-950 font-bold font-mono text-[10px]">
@@ -107,7 +110,7 @@ export default function Header() {
                 href="/store"
                 className="px-3 py-1.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 hover:bg-emerald-900/60 text-emerald-400 text-xs font-bold transition-all shadow-[0_0_10px_rgba(16,185,129,0.1)] hover:shadow-[0_0_15px_rgba(16,185,129,0.2)]"
               >
-                SuperMart 🏪
+                SuperMart
               </Link>
 
               <Link

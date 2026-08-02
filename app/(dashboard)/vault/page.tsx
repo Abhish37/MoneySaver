@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react'
 import Header from '../../../components/Header'
 import MobileNav from '../../../components/MobileNav'
 import OCRUploadModal from '../../../components/OCRUploadModal'
-import { getAuthSession, UserProfile } from '../../../lib/auth/session'
-import { useRouter } from 'next/navigation'
+import { useRequireAuth } from '../../../lib/hooks/useRequireAuth'
+import { getStorage, setStorage } from '../../../lib/utils/storage'
 
 interface VaultCoupon {
   id: string
@@ -40,8 +40,7 @@ const WALLET_SOURCES: LinkedWallet[] = [
 ]
 
 export default function VaultPage() {
-  const router = useRouter()
-  const [user, setUser] = useState<UserProfile | null>(null)
+  const { user } = useRequireAuth()
   const [isUploadOpen, setIsUploadOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<'MY_COUPONS' | 'LINK_WALLET'>('MY_COUPONS')
   const [coupons, setCoupons] = useState<VaultCoupon[]>([])
@@ -55,37 +54,26 @@ export default function VaultPage() {
   const [linkSuccess, setLinkSuccess] = useState<string | null>(null)
 
   useEffect(() => {
-    const activeUser = getAuthSession()
-    if (!activeUser) {
-      router.push('/login')
-    } else {
-      setUser(activeUser)
-    }
-
     // Load coupons
-    try {
-      const stored = localStorage.getItem('moneysaver_user_vault')
-      if (stored) {
-        const parsed: VaultCoupon[] = JSON.parse(stored)
-        const todayStr = new Date().toISOString().split('T')[0]
-        setCoupons(parsed.filter((c) => !c.expires || c.expires >= todayStr))
-      }
-    } catch (e) {}
+    const rawCoupons = getStorage<VaultCoupon[]>('moneysaver_user_vault', [])
+    const todayStr = new Date().toISOString().split('T')[0]
+    setCoupons(rawCoupons.filter((c) => !c.expires || c.expires >= todayStr))
 
     // Load linked wallet state
-    try {
-      const linkedState = localStorage.getItem('moneysaver_linked_wallets')
-      if (linkedState) {
-        const parsed = JSON.parse(linkedState)
-        setWallets(WALLET_SOURCES.map((w) => ({ ...w, linked: parsed[w.id] || false, couponsFound: parsed[`${w.id}_count`] || 0 })))
-      }
-    } catch (e) {}
-  }, [router])
+    const linkedState = getStorage<Record<string, unknown>>('moneysaver_linked_wallets', {})
+    if (Object.keys(linkedState).length > 0) {
+      setWallets(WALLET_SOURCES.map((w) => ({
+        ...w,
+        linked: Boolean(linkedState[w.id]),
+        couponsFound: Number(linkedState[`${w.id}_count`]) || 0,
+      })))
+    }
+  }, [])
 
   const handleDelete = (id: string) => {
     const updated = coupons.filter((c) => c.id !== id)
     setCoupons(updated)
-    try { localStorage.setItem('moneysaver_user_vault', JSON.stringify(updated)) } catch (e) {}
+    setStorage('moneysaver_user_vault', updated)
   }
 
   const handleEditSave = (e: React.FormEvent) => {
@@ -93,7 +81,7 @@ export default function VaultPage() {
     if (!editingCoupon) return
     const updated = coupons.map((c) => (c.id === editingCoupon.id ? editingCoupon : c))
     setCoupons(updated)
-    try { localStorage.setItem('moneysaver_user_vault', JSON.stringify(updated)) } catch (e) {}
+    setStorage('moneysaver_user_vault', updated)
     setEditingCoupon(null)
   }
 
@@ -118,7 +106,7 @@ export default function VaultPage() {
 
       const updatedCoupons = [...newCoupons, ...coupons]
       setCoupons(updatedCoupons)
-      try { localStorage.setItem('moneysaver_user_vault', JSON.stringify(updatedCoupons)) } catch (e) {}
+      setStorage('moneysaver_user_vault', updatedCoupons)
 
       // Update wallet linked state
       const updatedWallets = wallets.map((w) =>
@@ -126,12 +114,10 @@ export default function VaultPage() {
       )
       setWallets(updatedWallets)
 
-      // Persist
-      try {
-        const linkedState: Record<string, any> = {}
-        updatedWallets.forEach((w) => { linkedState[w.id] = w.linked; linkedState[`${w.id}_count`] = w.couponsFound })
-        localStorage.setItem('moneysaver_linked_wallets', JSON.stringify(linkedState))
-      } catch (e) {}
+      // Persist wallet linked state
+      const linkedState: Record<string, unknown> = {}
+      updatedWallets.forEach((w) => { linkedState[w.id] = w.linked; linkedState[`${w.id}_count`] = w.couponsFound })
+      setStorage('moneysaver_linked_wallets', linkedState)
 
       setLinkingWallet(null)
       setLinkSuccess(walletId)
@@ -148,12 +134,10 @@ export default function VaultPage() {
     // Remove coupons from this wallet
     const updatedCoupons = coupons.filter((c) => !c.id.startsWith(walletId))
     setCoupons(updatedCoupons)
-    try {
-      localStorage.setItem('moneysaver_user_vault', JSON.stringify(updatedCoupons))
-      const linkedState: Record<string, any> = {}
-      updatedWallets.forEach((w) => { linkedState[w.id] = w.linked; linkedState[`${w.id}_count`] = w.couponsFound })
-      localStorage.setItem('moneysaver_linked_wallets', JSON.stringify(linkedState))
-    } catch (e) {}
+    setStorage('moneysaver_user_vault', updatedCoupons)
+    const linkedState: Record<string, unknown> = {}
+    updatedWallets.forEach((w) => { linkedState[w.id] = w.linked; linkedState[`${w.id}_count`] = w.couponsFound })
+    setStorage('moneysaver_linked_wallets', linkedState)
   }
 
   const linkedCount = wallets.filter((w) => w.linked).length
