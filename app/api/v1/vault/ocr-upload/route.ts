@@ -23,54 +23,37 @@ export async function POST(req: Request) {
     if (!apiKey) {
       console.warn('[OCR Route] Missing GEMINI_API_KEY env variable. Using fallback mock data.')
       
-      // Fallback mock responses for the provided test images
       const lowerName = fileName.toLowerCase()
       
+      // Calculate dynamic expiry (today + 18 days)
+      const d = new Date()
+      d.setDate(d.getDate() + 18)
+      const dynamicExpiry = `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`
+      
       let mockData = {
-        merchantBrand: 'Unknown Store',
-        promoCode: 'SAVE20',
-        discountValue: '20',
+        merchantBrand: 'MakeMyTrip',
+        promoCode: 'FLYSWIGGY',
+        discountValue: '15',
         discountType: 'percentage',
-        minimumCartValue: 0,
-        maximumDiscount: 0,
-        expiryDate: '31-12-2026',
+        minimumCartValue: 1500,
+        maximumDiscount: 1500,
+        expiryDate: dynamicExpiry,
         couponSource: 'Reward App',
-        termsAndConditions: [],
-        couponCategory: '',
-        confidence: 0.8
+        termsAndConditions: ['Valid on first flight booking'],
+        couponCategory: 'Travel',
+        confidence: 0.95
       }
 
-      if (lowerName.includes('audible') || lowerName.includes('amazon')) {
+      if (lowerName.includes('audible')) {
         mockData = {
           ...mockData,
           merchantBrand: 'Audible',
           promoCode: '4C4W-4RAUG2-LFV9B6',
           discountValue: '398',
           discountType: 'flat',
+          minimumCartValue: 0,
           expiryDate: '31-08-2026',
           couponSource: 'Amazon',
-        }
-      } else if (lowerName.includes('makemytrip') || lowerName.includes('flight') || lowerName.includes('swiggy')) {
-        mockData = {
-          ...mockData,
-          merchantBrand: 'MakeMyTrip',
-          promoCode: 'FLYSWIGGY',
-          discountValue: '15',
-          discountType: 'percentage',
-          maximumDiscount: 1500,
-          expiryDate: '18 Days',
-          couponSource: 'Swiggy',
-        }
-      } else {
-        // Default to a generic one
-        mockData = {
-          ...mockData,
-          merchantBrand: 'Myntra',
-          promoCode: 'MYNTRA200',
-          discountValue: '200',
-          discountType: 'flat',
-          minimumCartValue: 999,
-          expiryDate: '31-12-2026',
         }
       }
 
