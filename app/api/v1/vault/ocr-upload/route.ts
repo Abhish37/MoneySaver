@@ -21,49 +21,8 @@ export async function POST(req: Request) {
 
     const apiKey = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY
     if (!apiKey) {
-      console.warn('[OCR Route] Missing GEMINI_API_KEY env variable. Using fallback mock data.')
-      
-      const lowerName = fileName.toLowerCase()
-      
-      // Calculate dynamic expiry (today + 18 days)
-      const d = new Date()
-      d.setDate(d.getDate() + 18)
-      const dynamicExpiry = `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`
-      
-      let mockData = {
-        merchantBrand: 'MakeMyTrip',
-        promoCode: 'FLYSWIGGY',
-        discountValue: '15',
-        discountType: 'percentage',
-        minimumCartValue: 1500,
-        maximumDiscount: 1500,
-        expiryDate: dynamicExpiry,
-        couponSource: 'Reward App',
-        termsAndConditions: ['Valid on first flight booking'],
-        couponCategory: 'Travel',
-        confidence: 0.95
-      }
-
-      if (lowerName.includes('audible')) {
-        mockData = {
-          ...mockData,
-          merchantBrand: 'Audible',
-          promoCode: '4C4W-4RAUG2-LFV9B6',
-          discountValue: '398',
-          discountType: 'flat',
-          minimumCartValue: 0,
-          expiryDate: '31-08-2026',
-          couponSource: 'Amazon',
-        }
-      }
-
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 1500))
-
-      return NextResponse.json({
-        success: true,
-        data: mockData,
-      })
+      console.error('[OCR Route] Missing GEMINI_API_KEY env variable')
+      return NextResponse.json({ error: 'Gemini API key not configured' }, { status: 500 })
     }
 
     // Determine MIME type from filename
