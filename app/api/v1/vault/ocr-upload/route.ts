@@ -84,6 +84,7 @@ Return ONLY valid JSON, no markdown, no explanation:
         temperature: 0.1,
         topP: 0.8,
         maxOutputTokens: 512,
+        responseMimeType: 'application/json',
       },
     })
 
@@ -137,7 +138,7 @@ Return ONLY valid JSON, no markdown, no explanation:
           return NextResponse.json({ error: 'Could not parse Gemini response as JSON' }, { status: 502 })
         }
       } else {
-        return NextResponse.json({ error: 'No JSON in Gemini response' }, { status: 502 })
+        return NextResponse.json({ error: `No JSON in Gemini response. AI said: "${cleanJson.substring(0, 50)}..."` }, { status: 502 })
       }
     }
 
