@@ -66,39 +66,46 @@ Return ONLY valid JSON, no markdown, no explanation:
   "confidence": 0.0
 }`
 
-    const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [
+    const requestBody = JSON.stringify({
+      contents: [
+        {
+          parts: [
+            { text: promptText },
             {
-              parts: [
-                { text: promptText },
-                {
-                  inline_data: {
-                    mime_type: mimeType,
-                    data: imageBase64, // raw base64, no data: prefix
-                  },
-                },
-              ],
+              inline_data: {
+                mime_type: mimeType,
+                data: imageBase64, // raw base64, no data: prefix
+              },
             },
           ],
-          generationConfig: {
-            temperature: 0.1,
-            topP: 0.8,
-            maxOutputTokens: 512,
-          },
-        }),
-      }
+        },
+      ],
+      generationConfig: {
+        temperature: 0.1,
+        topP: 0.8,
+        maxOutputTokens: 512,
+      },
+    })
+
+    let geminiRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: requestBody }
     )
+
+    // Fallback to gemini-1.5-flash if 429 (Resource Exhausted) or 404
+    if (geminiRes.status === 429 || geminiRes.status === 404) {
+      console.warn(`[OCR Route] Gemini 2.0 Flash returned ${geminiRes.status}, falling back to gemini-1.5-flash...`)
+      geminiRes = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: requestBody }
+      )
+    }
 
     if (!geminiRes.ok) {
       const errText = await geminiRes.text()
       console.error('[OCR Route] Gemini API error:', geminiRes.status, errText)
       return NextResponse.json(
-        { error: `Gemini Vision API error: ${geminiRes.status}` },
+        { error: `Gemini Vision API error: ${geminiRes.status}. Try a clearer photo or use "Enter Manually".` },
         { status: 502 }
       )
     }
