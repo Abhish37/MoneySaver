@@ -88,15 +88,15 @@ Return ONLY valid JSON, no markdown, no explanation:
     })
 
     let geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`,
       { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: requestBody }
     )
 
-    // Fallback to gemini-1.5-flash if 429 (Resource Exhausted) or 404
+    // Fallback to gemini-3.5-flash-lite if 429 (Resource Exhausted) or 404
     if (geminiRes.status === 429 || geminiRes.status === 404) {
-      console.warn(`[OCR Route] Gemini 2.0 Flash returned ${geminiRes.status}, falling back to gemini-1.5-flash...`)
+      console.warn(`[OCR Route] Gemini 3.5 Flash returned ${geminiRes.status}, falling back to gemini-3.5-flash-lite...`)
       geminiRes = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`,
         { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: requestBody }
       )
     }
