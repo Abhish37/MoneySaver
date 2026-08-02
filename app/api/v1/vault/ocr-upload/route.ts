@@ -81,9 +81,8 @@ Return ONLY valid JSON, no markdown, no explanation:
         },
       ],
       generationConfig: {
-        temperature: 0.1,
+        temperature: 0.2,
         topP: 0.8,
-        maxOutputTokens: 512,
         responseMimeType: 'application/json',
       },
     })
