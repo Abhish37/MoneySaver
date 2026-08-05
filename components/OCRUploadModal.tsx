@@ -17,6 +17,7 @@ interface ParsedCouponData {
   expiryDate: string
   couponSource: string
   confidence: number
+  termsAndConditions?: string[]
 }
 
 /** Convert a File to base64 string (raw, no data: prefix) */
@@ -152,22 +153,48 @@ export default function OCRUploadModal({ isOpen, onClose }: OCRUploadModalProps)
 
   const handleSaveToVault = () => {
     try {
-      const isPercentage = discountType === 'percentage' || (discountVal && Number(discountVal) <= 100 && !discountType)
-      const discountLabel = discountVal
-        ? `${discountVal}${isPercentage ? '%' : '₹'} OFF`
-        : 'Verified Offer'
+      const isPercentage = discountType === 'percentage' || (discountVal && !isNaN(Number(discountVal)) && Number(discountVal) <= 100 && !discountType)
+      const isCustom = discountType === 'custom' || isNaN(Number(discountVal))
+      
+      let discountLabel = 'Verified Offer'
+      if (discountVal) {
+        if (isCustom) {
+          discountLabel = discountVal
+        } else {
+          discountLabel = `${discountVal}${isPercentage ? '%' : '₹'} OFF`
+        }
+      }
+
+      // Convert expiryVal from DD-MM-YYYY → YYYY-MM-DD for consistent date comparison in vault
+      let normalizedExpiry = '2026-12-31'
+      if (expiryVal) {
+        const ddmmyyyy = expiryVal.match(/^(\d{2})-(\d{2})-(\d{4})$/)
+        if (ddmmyyyy) {
+          normalizedExpiry = `${ddmmyyyy[3]}-${ddmmyyyy[2]}-${ddmmyyyy[1]}`
+        } else if (/^\d{4}-\d{2}-\d{2}$/.test(expiryVal)) {
+          // Already YYYY-MM-DD
+          normalizedExpiry = expiryVal
+        } else {
+          // Try to parse any other format
+          const parsed = new Date(expiryVal)
+          if (!isNaN(parsed.getTime())) {
+            normalizedExpiry = parsed.toISOString().split('T')[0]
+          }
+        }
+      }
 
       const newCoupon = {
         id: Math.random().toString(36).substring(2, 9),
         code: couponCode ? couponCode.toUpperCase() : 'PROMO',
         store: storeName || 'General Store',
         discount: discountLabel,
-        discountValue: Number(discountVal) || 0,
+        discountValue: isNaN(Number(discountVal)) ? 0 : Number(discountVal),
         minCartValue: Number(minCartVal) || 0,
         originApp: originApp || 'Reward Card',
         source: activeTab === 'UPLOAD' ? 'GEMINI_VISION' : 'USER_MANUAL',
-        expires: expiryVal || '2026-12-31',
+        expires: normalizedExpiry,
         createdAt: new Date().toISOString(),
+        termsAndConditions: parsedCoupon?.termsAndConditions || [],
       }
 
       const existingVault = localStorage.getItem('moneysaver_user_vault')
@@ -175,11 +202,13 @@ export default function OCRUploadModal({ isOpen, onClose }: OCRUploadModalProps)
       vaultList.unshift(newCoupon)
       localStorage.setItem('moneysaver_user_vault', JSON.stringify(vaultList))
       window.dispatchEvent(new Event('vaultUpdated'))
+      onClose()
     } catch (err) {
       console.error('[OCR Modal] Save error:', err)
+      alert('Could not save coupon. Please try again.')
     }
-    onClose()
   }
+
 
   const stageLabels: Record<string, string> = {
     READING:   'Reading image...',
@@ -425,6 +454,23 @@ export default function OCRUploadModal({ isOpen, onClose }: OCRUploadModalProps)
                       className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm text-slate-200 mt-1 font-mono focus:border-emerald-500 focus:outline-none"
                     />
                   </div>
+                  
+                  {parsedCoupon?.termsAndConditions && parsedCoupon.termsAndConditions.length > 0 && (
+                    <div className="relative group mt-2 pt-2 border-t border-slate-800/50">
+                      <div className="flex items-center gap-2 cursor-pointer text-slate-400 hover:text-emerald-400 transition-colors w-max">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        <span className="text-xs font-medium">Terms & Conditions Extracted</span>
+                      </div>
+                      
+                      <div className="absolute bottom-full left-0 mb-2 w-full max-h-48 overflow-y-auto bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded-lg p-3 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                        <ul className="list-disc pl-4 space-y-1">
+                          {parsedCoupon.termsAndConditions.map((t, idx) => (
+                            <li key={idx}>{t}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 

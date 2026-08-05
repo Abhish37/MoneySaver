@@ -1,13 +1,21 @@
 import type { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
-import { Outfit, JetBrains_Mono } from 'next/font/google'
+import { Outfit, Inter, JetBrains_Mono } from 'next/font/google'
 import { CartProvider } from '@/components/CartProvider'
 import './globals.css'
 
-const outfit = Outfit({
+const inter = Inter({
   subsets: ['latin'],
   variable: '--font-sans',
   display: 'swap',
+  weight: ['400', '500', '600', '700'],
+})
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+  weight: ['400', '500', '600', '700', '800'],
 })
 
 const mono = JetBrains_Mono({
@@ -42,8 +50,8 @@ export default function RootLayout({
 
   if (!isValidClerkKey) {
     return (
-      <html lang="en" className={`${outfit.variable} ${mono.variable}`}>
-        <body className="antialiased min-h-screen flex flex-col">
+      <html lang="en" className={`${inter.variable} ${outfit.variable} ${mono.variable} dark`}>
+        <body className="antialiased min-h-screen flex flex-col bg-[#0E1117]">
           <CartProvider>
             {children}
           </CartProvider>
@@ -54,8 +62,8 @@ export default function RootLayout({
 
   return (
     <ClerkProvider publishableKey={rawKey}>
-      <html lang="en" className={`${outfit.variable} ${mono.variable}`}>
-        <body className="antialiased min-h-screen flex flex-col">
+      <html lang="en" className={`${inter.variable} ${outfit.variable} ${mono.variable} dark`}>
+        <body className="antialiased min-h-screen flex flex-col bg-[#0E1117]">
           <CartProvider>
             {children}
           </CartProvider>

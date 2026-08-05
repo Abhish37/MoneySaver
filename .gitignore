@@ -164,3 +164,5 @@ fk.html
 
 # Drizzle migration state (local only)
 drizzle/meta/_journal.json
+
+.env*

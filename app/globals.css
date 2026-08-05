@@ -2,51 +2,227 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
 @layer base {
   :root {
-    --bg-app: #FAFAFA;
-    --bg-surface: #FFFFFF;
-    --bg-surface-subtle: #F1F5F9;
-    --border-subtle: #E2E8F0;
-    --text-primary: #0F172A;
-    --text-secondary: #64748B;
-    --brand-emerald: #059669;
-    --brand-amber: #F59E0B;
-    --brand-crimson: #991B1B;
-    --brand-oxblood: #450A0A;
+    /* ── Professional Fintech Color System ─────────────────────────────── */
+
+    /* Backgrounds — deep graphite, not pitch black */
+    --bg-app:            #0E1117;
+    --bg-surface:        #161B22;
+    --bg-surface-subtle: #1C2128;
+    --bg-surface-raised: #21262D;
+
+    /* Borders — subtle cool gray */
+    --border-default:    #30363D;
+    --border-subtle:     #21262D;
+    --border-strong:     #484F58;
+
+    /* Text */
+    --text-primary:      #E6EDF3;
+    --text-secondary:    #7D8590;
+    --text-muted:        #484F58;
+    --text-inverse:      #0E1117;
+
+    /* Brand — Deep Forest Green (authoritative, not neon) */
+    --brand-green:       #1A4731;
+    --brand-green-mid:   #196832;
+    --brand-green-light: #2DA44E;
+    --brand-green-muted: #238636;
+
+    /* Accent — Warm Gold / Harvest (wealth, premium) */
+    --brand-gold:        #C9A227;
+    --brand-gold-light:  #E3B341;
+    --brand-gold-muted:  #9E7C0A;
+
+    /* Status */
+    --status-success:    #3FB950;
+    --status-danger:     #DA3633;
+    --status-warning:    #D29922;
+    --status-info:       #388BFD;
+
+    /* Legacy aliases (kept for compatibility) */
+    --brand-emerald:     #2DA44E;
+    --brand-amber:       #C9A227;
   }
 
-  .dark {
-    --bg-app: #090D16;
-    --bg-surface: #111827;
-    --bg-surface-subtle: #1E293B;
-    --border-subtle: #1F2937;
-    --text-primary: #F8FAFC;
-    --text-secondary: #94A3B8;
-    --brand-emerald: #10B981;
-    --brand-amber: #FBBF24;
-    --brand-crimson: #991B1B;
-    --brand-oxblood: #450A0A;
-  }
+  /* Note: We use dark-first design — no .dark override needed */
 
   body {
     background-color: var(--bg-app);
     color: var(--text-primary);
-    font-family: var(--font-sans);
+    font-family: 'Inter', 'Outfit', sans-serif;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Professional heading typography */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+  }
+
+  /* Clean input reset */
+  input, textarea, select {
+    font-family: 'Inter', sans-serif;
   }
 }
 
 @layer utilities {
+  /* ── Header ──────────────────────────────────────────────────────────── */
+  .pro-header {
+    background-color: rgba(14, 17, 23, 0.96);
+    border-bottom: 1px solid var(--border-default);
+    backdrop-filter: blur(8px);
+  }
+
+  /* ── Surface Utilities ───────────────────────────────────────────────── */
+  .pro-surface {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+  }
+
+  .pro-surface-raised {
+    background-color: var(--bg-surface-raised);
+    border: 1px solid var(--border-default);
+    border-radius: 10px;
+  }
+
+  /* ── Border ──────────────────────────────────────────────────────────── */
+  .pro-border {
+    border-color: var(--border-default);
+  }
+
+  /* ── Badge / Pill ────────────────────────────────────────────────────── */
+  .pro-badge-green {
+    background-color: rgba(26, 71, 49, 0.4);
+    border: 1px solid rgba(45, 164, 78, 0.3);
+    color: var(--brand-green-light);
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 11px;
+  }
+
+  .pro-badge-gold {
+    background-color: rgba(201, 162, 39, 0.12);
+    border: 1px solid rgba(201, 162, 39, 0.35);
+    color: var(--brand-gold-light);
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 11px;
+  }
+
+  /* ── Button ──────────────────────────────────────────────────────────── */
+  .pro-btn-primary {
+    background-color: var(--brand-green-muted);
+    color: #ffffff;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: background-color 150ms ease, box-shadow 150ms ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+
+  .pro-btn-primary:hover {
+    background-color: var(--brand-green-light);
+    box-shadow: 0 2px 8px rgba(35, 134, 54, 0.3);
+  }
+
+  .pro-btn-secondary {
+    background-color: var(--bg-surface-raised);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    font-weight: 600;
+    border-radius: 8px;
+    transition: background-color 150ms ease, border-color 150ms ease;
+  }
+
+  .pro-btn-secondary:hover {
+    background-color: var(--bg-surface);
+    border-color: var(--border-strong);
+  }
+
+  /* ── Input ───────────────────────────────────────────────────────────── */
+  .pro-input {
+    background-color: var(--bg-app);
+    border: 1px solid var(--border-default);
+    border-radius: 8px;
+    color: var(--text-primary);
+    transition: border-color 150ms ease;
+  }
+
+  .pro-input:focus {
+    border-color: var(--brand-green-light);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(45, 164, 78, 0.12);
+  }
+
+  /* ── Link active state ───────────────────────────────────────────────── */
+  .pro-nav-active {
+    color: var(--brand-green-light);
+    font-weight: 600;
+  }
+
+  .pro-nav-inactive {
+    color: var(--text-secondary);
+  }
+
+  .pro-nav-inactive:hover {
+    color: var(--text-primary);
+  }
+
+  /* ── Legacy glass-header (backwards compat) ──────────────────────────── */
   .glass-header {
-    backdrop-filter: blur(12px);
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(14, 17, 23, 0.96);
+    backdrop-filter: blur(8px);
   }
-  .dark .glass-header {
-    background-color: rgba(17, 24, 39, 0.8);
-  }
+
   .hero-card-border {
-    border: 1px solid rgba(69, 10, 10, 0.2);
+    border: 1px solid var(--border-default);
+  }
+
+  /* ── Subtle divider line ─────────────────────────────────────────────── */
+  .pro-divider {
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  /* ── Card hover elevation ────────────────────────────────────────────── */
+  .pro-card-hover {
+    transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+  }
+
+  .pro-card-hover:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  /* ── Best price highlight row ────────────────────────────────────────── */
+  .pro-best-row {
+    background-color: rgba(26, 71, 49, 0.12);
+    border-left: 3px solid var(--brand-green-light);
+  }
+
+  /* ── Scrollbar hide ──────────────────────────────────────────────────── */
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ── Fade in animation ───────────────────────────────────────────────── */
+  .animate-fade-in {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 }

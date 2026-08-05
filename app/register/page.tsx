@@ -16,7 +16,6 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [acceptTerms, setAcceptTerms] = useState(true)
 
-  // Mobile state
   const [phone, setPhone] = useState('')
   const [otp, setOtp] = useState('')
   const [otpSent, setOtpSent] = useState(false)
@@ -103,165 +102,155 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-50 flex flex-col justify-center items-center p-4 relative overflow-hidden py-12">
-      <div className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl relative z-10">
-        <div className="text-center mb-6">
-          <Link href="/" className="inline-flex items-center gap-2 text-2xl font-bold font-mono tracking-wider mb-2">
-            <span className="text-emerald-400">Money</span>
-            <span className="text-amber-400">Saver</span>
+    <div className="min-h-screen bg-[#0E1117] text-[#E6EDF3] flex flex-col justify-center items-center p-4 relative overflow-hidden py-12">
+      {/* Subtle radial background tint */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_#1A4731_0%,_transparent_60%)] opacity-10 pointer-events-none" />
+
+      <div className="w-full max-w-lg bg-[#161B22] border border-[#30363D] rounded-xl p-8 shadow-[0_8px_40px_rgba(0,0,0,0.6)] relative z-10">
+        
+        {/* Brand */}
+        <div className="text-center mb-7">
+          <Link href="/" className="inline-flex items-center gap-2 text-xl font-bold font-display tracking-tight mb-3">
+            <span className="text-[#2DA44E]">Money</span>
+            <span className="text-[#E3B341]">Saver</span>
           </Link>
-          <h1 className="text-xl font-bold text-slate-100">Create Free Account</h1>
-          <p className="text-xs text-slate-400 mt-1">Register with Google, Mobile OTP, or Email</p>
+          <h1 className="text-lg font-semibold text-[#E6EDF3]">Create your account</h1>
+          <p className="text-xs text-[#7D8590] mt-1">Free forever · No credit card required</p>
         </div>
 
         {errorMsg && (
-          <div className="mb-6 p-3 rounded-xl bg-red-950/60 border border-red-500/40 text-xs text-red-300 font-semibold text-center animate-fade-in">
-            ⚠️ {errorMsg}
+          <div className="mb-5 p-3 rounded-lg bg-[#DA3633]/10 border border-[#DA3633]/30 text-xs text-[#DA3633] font-medium text-center">
+            {errorMsg}
           </div>
         )}
 
-        {/* Official Google Sign In Button */}
+        {/* Google Sign Up */}
         <button
           type="button"
           onClick={handleGoogleRegister}
           disabled={loading}
-          className="w-full mb-5 py-3 px-4 rounded-xl bg-white hover:bg-slate-100 font-bold text-slate-900 transition-all flex items-center justify-center gap-3 text-xs shadow-md min-h-[44px]"
+          className="w-full mb-5 py-2.5 px-4 rounded-lg bg-white hover:bg-[#F3F4F6] font-semibold text-[#111827] transition-all flex items-center justify-center gap-3 text-sm shadow-sm min-h-[44px] border border-[#E5E7EB]"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24">
-            <path
-              fill="#4285F4"
-              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-            />
-            <path
-              fill="#34A853"
-              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-            />
-            <path
-              fill="#FBBC05"
-              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-            />
-            <path
-              fill="#EA4335"
-              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-            />
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
           </svg>
-          <span>Quick Sign Up with Google</span>
+          <span>Sign up with Google</span>
         </button>
 
+        {/* Divider */}
         <div className="relative flex items-center justify-center mb-5">
-          <div className="border-t border-slate-800 w-full" />
-          <span className="bg-slate-900 px-3 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-            OR
-          </span>
+          <div className="border-t border-[#30363D] w-full" />
+          <span className="bg-[#161B22] px-3 text-[11px] font-medium text-[#484F58] uppercase tracking-wider">or</span>
         </div>
 
-        {/* Auth Method Switcher Tabs */}
-        <div className="flex bg-slate-950 p-1 rounded-xl border border-slate-800 mb-5">
+        {/* Auth Method Tabs */}
+        <div className="flex bg-[#0E1117] p-1 rounded-lg border border-[#30363D] mb-5">
           <button
             type="button"
-            onClick={() => {
-              setAuthMethod('EMAIL')
-              setErrorMsg('')
-            }}
-            className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
+            onClick={() => { setAuthMethod('EMAIL'); setErrorMsg('') }}
+            className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all ${
               authMethod === 'EMAIL'
-                ? 'bg-slate-800 text-emerald-400 shadow-sm'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-[#21262D] text-[#2DA44E] border border-[#30363D] shadow-sm'
+                : 'text-[#484F58] hover:text-[#7D8590]'
             }`}
           >
-            ✉️ Email Registration
+            Email Registration
           </button>
           <button
             type="button"
-            onClick={() => {
-              setAuthMethod('PHONE')
-              setErrorMsg('')
-            }}
-            className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
+            onClick={() => { setAuthMethod('PHONE'); setErrorMsg('') }}
+            className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all ${
               authMethod === 'PHONE'
-                ? 'bg-slate-800 text-emerald-400 shadow-sm'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-[#21262D] text-[#2DA44E] border border-[#30363D] shadow-sm'
+                : 'text-[#484F58] hover:text-[#7D8590]'
             }`}
           >
-            📱 Mobile OTP Register
+            Mobile OTP
           </button>
         </div>
 
         {authMethod === 'EMAIL' && (
           <form onSubmit={handleEmailRegister} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-semibold text-slate-300">First Name</label>
+                <label className="text-xs font-medium text-[#7D8590] block mb-1.5">First Name</label>
                 <input
                   type="text"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   placeholder="Rohan"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 mt-1 focus:border-emerald-500 focus:outline-none"
+                  className="w-full bg-[#0E1117] border border-[#30363D] rounded-lg p-3 text-sm text-[#E6EDF3] placeholder-[#484F58] focus:border-[#2DA44E] focus:outline-none focus:ring-2 focus:ring-[#2DA44E]/10 transition-all"
                 />
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-300">Last Name</label>
+                <label className="text-xs font-medium text-[#7D8590] block mb-1.5">Last Name</label>
                 <input
                   type="text"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   placeholder="Sharma"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 mt-1 focus:border-emerald-500 focus:outline-none"
+                  className="w-full bg-[#0E1117] border border-[#30363D] rounded-lg p-3 text-sm text-[#E6EDF3] placeholder-[#484F58] focus:border-[#2DA44E] focus:outline-none focus:ring-2 focus:ring-[#2DA44E]/10 transition-all"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-slate-300">Email Address</label>
+              <label className="text-xs font-medium text-[#7D8590] block mb-1.5">Email Address</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 mt-1 focus:border-emerald-500 focus:outline-none"
+                className="w-full bg-[#0E1117] border border-[#30363D] rounded-lg p-3 text-sm text-[#E6EDF3] placeholder-[#484F58] focus:border-[#2DA44E] focus:outline-none focus:ring-2 focus:ring-[#2DA44E]/10 transition-all"
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-semibold text-slate-300">Password</label>
+                <label className="text-xs font-medium text-[#7D8590] block mb-1.5">Password</label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 mt-1 font-mono focus:border-emerald-500 focus:outline-none"
+                  className="w-full bg-[#0E1117] border border-[#30363D] rounded-lg p-3 text-sm text-[#E6EDF3] font-mono placeholder-[#484F58] focus:border-[#2DA44E] focus:outline-none focus:ring-2 focus:ring-[#2DA44E]/10 transition-all"
                 />
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-300">Confirm Password</label>
+                <label className="text-xs font-medium text-[#7D8590] block mb-1.5">Confirm Password</label>
                 <input
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 mt-1 font-mono focus:border-emerald-500 focus:outline-none"
+                  className="w-full bg-[#0E1117] border border-[#30363D] rounded-lg p-3 text-sm text-[#E6EDF3] font-mono placeholder-[#484F58] focus:border-[#2DA44E] focus:outline-none focus:ring-2 focus:ring-[#2DA44E]/10 transition-all"
                 />
               </div>
             </div>
 
-            <div className="flex items-center gap-2 text-xs text-slate-400">
+            <div className="flex items-center gap-2 text-xs text-[#7D8590]">
               <input
                 type="checkbox"
                 checked={acceptTerms}
                 onChange={(e) => setAcceptTerms(e.target.checked)}
-                className="rounded border-slate-800 bg-slate-950 text-emerald-500"
+                className="rounded border-[#30363D] bg-[#0E1117] text-[#238636] focus:ring-[#238636] focus:ring-offset-0"
               />
-              <span>I agree to the Terms of Service & Privacy Policy</span>
+              <span>I agree to the Terms of Service &amp; Privacy Policy</span>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-white transition-all shadow-lg shadow-emerald-950 min-h-[46px]"
+              className="w-full py-3 rounded-lg bg-[#238636] hover:bg-[#2DA44E] font-semibold text-white transition-all shadow-[0_2px_10px_rgba(35,134,54,0.25)] min-h-[44px] text-sm disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              {loading ? 'Creating Account...' : 'Create Account & Continue 🎉'}
+              {loading ? (
+                <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Creating account…</>
+              ) : (
+                'Create Account →'
+              )}
             </button>
           </form>
         )}
@@ -271,9 +260,9 @@ export default function RegisterPage() {
             {!otpSent ? (
               <form onSubmit={handleSendOTP} className="space-y-4">
                 <div>
-                  <label className="text-xs font-semibold text-slate-300">Mobile Phone Number</label>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="px-3 py-3 bg-slate-950 border border-slate-800 rounded-xl text-xs font-mono font-bold text-slate-300">
+                  <label className="text-xs font-medium text-[#7D8590] block mb-1.5">Mobile Number</label>
+                  <div className="flex items-center gap-2">
+                    <span className="px-3 py-3 bg-[#0E1117] border border-[#30363D] rounded-lg text-xs font-mono font-medium text-[#7D8590]">
                       🇮🇳 +91
                     </span>
                     <input
@@ -281,53 +270,53 @@ export default function RegisterPage() {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
                       placeholder="9876543210"
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 font-mono focus:border-emerald-500 focus:outline-none"
+                      className="w-full bg-[#0E1117] border border-[#30363D] rounded-lg p-3 text-sm text-[#E6EDF3] font-mono placeholder-[#484F58] focus:border-[#2DA44E] focus:outline-none focus:ring-2 focus:ring-[#2DA44E]/10"
                     />
                   </div>
                 </div>
-
                 <button
                   type="submit"
-                  className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-white transition-all shadow-lg shadow-emerald-950 min-h-[46px]"
+                  className="w-full py-3 rounded-lg bg-[#238636] hover:bg-[#2DA44E] font-semibold text-white transition-all text-sm min-h-[44px]"
                 >
-                  Send 6-Digit Verification OTP 📲
+                  Send Verification OTP →
                 </button>
               </form>
             ) : (
               <form onSubmit={handleVerifyOTP} className="space-y-4 animate-fade-in">
-                <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-xs text-emerald-300 text-center">
-                  📲 OTP sent to <strong>+91 {phone}</strong>
+                <div className="p-3 rounded-lg bg-[#1A4731]/30 border border-[#2DA44E]/25 text-xs text-[#2DA44E] text-center">
+                  OTP sent to <strong>+91 {phone}</strong>
                   <br />
-                  <span className="text-[11px] text-slate-400">Use test OTP: <strong>123456</strong></span>
+                  <span className="text-[11px] text-[#7D8590]">Test OTP: <strong className="text-[#E6EDF3]">123456</strong></span>
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-slate-300">Enter 6-Digit Verification OTP</label>
+                  <label className="text-xs font-medium text-[#7D8590] block mb-1.5">Enter 6-Digit OTP</label>
                   <input
                     type="text"
                     value={otp}
                     onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                     placeholder="123456"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-center text-xl tracking-widest font-mono font-extrabold text-amber-400 mt-1 focus:border-emerald-500 focus:outline-none"
+                    className="w-full bg-[#0E1117] border border-[#30363D] rounded-lg p-3 text-center text-2xl tracking-[0.5em] font-mono font-bold text-[#E3B341] mt-1 focus:border-[#2DA44E] focus:outline-none focus:ring-2 focus:ring-[#2DA44E]/10"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-white transition-all shadow-lg shadow-emerald-950 min-h-[46px]"
+                  className="w-full py-3 rounded-lg bg-[#238636] hover:bg-[#2DA44E] font-semibold text-white transition-all text-sm min-h-[44px] disabled:opacity-50"
                 >
-                  {loading ? 'Verifying...' : 'Verify OTP & Register 🎉'}
+                  {loading ? 'Verifying…' : 'Verify & Register →'}
                 </button>
               </form>
             )}
           </div>
         )}
 
-        <div className="mt-6 pt-6 border-t border-slate-800/80 text-center text-xs text-slate-400">
+        {/* Footer */}
+        <div className="mt-6 pt-5 border-t border-[#21262D] text-center text-xs text-[#7D8590]">
           <span>Already have an account? </span>
-          <Link href="/login" className="font-semibold text-emerald-400 hover:underline">
-            Sign In
+          <Link href="/login" className="font-semibold text-[#2DA44E] hover:underline">
+            Sign in
           </Link>
         </div>
       </div>

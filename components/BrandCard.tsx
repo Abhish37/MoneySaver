@@ -13,42 +13,42 @@ export default function BrandCard({ store }: BrandCardProps) {
   return (
     <Link
       href={`/deals/${store.slug}`}
-      className="group relative bg-slate-900 border border-slate-800 hover:border-emerald-500/50 rounded-2xl p-5 shadow-lg hover:shadow-2xl hover:shadow-emerald-950/40 transition-all duration-300 transform hover:-translate-y-1 flex flex-col justify-between"
+      className="group relative bg-[#161B22] border border-[#30363D] hover:border-[#484F58] rounded-xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.6)] transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between"
     >
       <div>
-        {/* Top Header Badge */}
+        {/* Top Header: Logo + Savings Badge */}
         <div className="flex items-center justify-between mb-4">
-          <span className="w-12 h-12 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+          <span className="w-11 h-11 rounded-lg bg-[#1C2128] border border-[#30363D] flex items-center justify-center text-2xl group-hover:scale-105 transition-transform">
             {store.logo}
           </span>
-          <span className="px-2.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-[11px] font-bold font-mono text-emerald-400 shadow-sm">
+          <span className="px-2 py-0.5 rounded-full bg-[#1A4731]/50 border border-[#2DA44E]/30 text-[11px] font-semibold text-[#2DA44E]">
             Save {store.minimumSaving}–{store.maximumSaving}%
           </span>
         </div>
 
         {/* Brand Name & Category */}
-        <h3 className="text-base font-bold text-slate-100 group-hover:text-emerald-400 transition-colors font-['Outfit',sans-serif] tracking-tight flex items-center gap-1.5">
+        <h3 className="text-sm font-semibold text-[#E6EDF3] group-hover:text-[#2DA44E] transition-colors font-display tracking-tight flex items-center gap-1">
           {store.name}
-          <span className="text-xs text-slate-500 font-normal">↗</span>
+          <span className="text-[#484F58] font-normal text-xs">↗</span>
         </h3>
 
-        <span className="inline-block text-[10px] font-semibold uppercase tracking-wider text-amber-400/90 mt-0.5">
+        <span className="inline-block text-[10px] font-semibold uppercase tracking-wider text-[#C9A227]/80 mt-0.5">
           {store.category}
         </span>
 
-        <p className="text-xs text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+        <p className="text-xs text-[#7D8590] mt-2 line-clamp-2 leading-relaxed">
           {store.description}
         </p>
       </div>
 
       {/* Footer Feature Badges */}
-      <div className="mt-4 pt-4 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
-        <span className="flex items-center gap-1 font-mono">
-          <CouponIcon size={12} className="text-amber-400" />
-          <strong className="text-amber-400">{store.supportedCoupons}</strong> Coupons
+      <div className="mt-4 pt-3 border-t border-[#21262D] flex items-center justify-between">
+        <span className="flex items-center gap-1 text-[11px] text-[#7D8590] font-mono">
+          <CouponIcon size={11} className="text-[#C9A227]" />
+          <strong className="text-[#E3B341]">{store.supportedCoupons}</strong> Coupons
         </span>
-        <span className="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-[10px] text-slate-300 font-mono flex items-center gap-1">
-          <GiftCardIcon size={11} className="text-purple-400" />
+        <span className="px-2 py-0.5 rounded bg-[#1C2128] border border-[#30363D] text-[10px] text-[#7D8590] font-mono flex items-center gap-1">
+          <GiftCardIcon size={10} className="text-[#7D8590]" />
           {store.giftCardDiscountPct}% Voucher
         </span>
       </div>
