@@ -114,30 +114,36 @@ export default function Header() {
             <>
               <Link
                 href="/dashboard"
-                className={`transition-colors ${pathname === '/dashboard' ? 'text-[#2DA44E] font-semibold' : 'text-[#7D8590] hover:text-[#E6EDF3]'}`}
+                className={`transition-colors ${pathname === '/dashboard' ? 'text-[#2DA44E] font-semibold' : 'text-[#8E95A3] hover:text-[#B7BCC8]'}`}
               >
                 Brand Discovery
               </Link>
               <Link
                 href="/vault"
-                className={`transition-colors ${pathname === '/vault' ? 'text-[#2DA44E] font-semibold' : 'text-[#7D8590] hover:text-[#E6EDF3]'}`}
+                className={`transition-colors ${pathname === '/vault' ? 'text-[#2DA44E] font-semibold' : 'text-[#8E95A3] hover:text-[#B7BCC8]'}`}
               >
                 Coupon Vault
               </Link>
               <Link
                 href="/cards"
-                className={`transition-colors ${pathname === '/cards' ? 'text-[#2DA44E] font-semibold' : 'text-[#7D8590] hover:text-[#E6EDF3]'}`}
+                className={`transition-colors ${pathname === '/cards' ? 'text-[#2DA44E] font-semibold' : 'text-[#8E95A3] hover:text-[#B7BCC8]'}`}
               >
                 Cards &amp; UPI
               </Link>
             </>
           ) : (
             <>
-              <Link href="/" className="text-[#7D8590] hover:text-[#E6EDF3] transition-colors">
+              <Link href="#how-it-works" className="text-[#8E95A3] hover:text-[#B7BCC8] transition-colors">
                 How It Works
               </Link>
-              <Link href="/" className="text-[#7D8590] hover:text-[#E6EDF3] transition-colors">
-                Features
+              <Link href="#supported-stores" className="text-[#8E95A3] hover:text-[#B7BCC8] transition-colors">
+                Supported Stores
+              </Link>
+              <Link href="#savings-calculator" className="text-[#8E95A3] hover:text-[#B7BCC8] transition-colors">
+                Savings Calculator
+              </Link>
+              <Link href="#faq" className="text-[#8E95A3] hover:text-[#B7BCC8] transition-colors">
+                FAQ
               </Link>
             </>
           )}

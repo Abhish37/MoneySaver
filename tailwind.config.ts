@@ -13,7 +13,7 @@ const config: Config = {
         // ── Professional Fintech Palette ────────────────────────────────
         pro: {
           // Backgrounds
-          app:     '#0E1117',
+          app:     '#0E1018',
           surface: '#161B22',
           subtle:  '#1C2128',
           raised:  '#21262D',
@@ -22,8 +22,8 @@ const config: Config = {
           'border-subtle': '#21262D',
           'border-strong': '#484F58',
           // Text
-          text:    '#E6EDF3',
-          muted:   '#7D8590',
+          text:    '#B7BCC8',
+          muted:   '#8E95A3',
           faint:   '#484F58',
         },
 

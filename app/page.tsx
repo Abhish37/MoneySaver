@@ -8,18 +8,18 @@ export default function LandingPage() {
       {/* Professional status badge */}
       <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1A4731]/40 border border-[#2DA44E]/25 text-[#2DA44E] text-xs font-semibold uppercase tracking-widest mb-8">
         <span className="w-1.5 h-1.5 rounded-full bg-[#2DA44E] inline-block animate-pulse" />
-        <span>Savings Intelligence Platform</span>
+        <span>Over ₹10,000+ calculated in user savings</span>
       </div>
 
       {/* Main Heading */}
-      <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-[#E6EDF3] mb-5 leading-tight font-display">
+      <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-[#B7BCC8] mb-5 leading-tight font-display">
         Never Pay Full Price Again.{' '}
         <br />
         <span className="text-[#2DA44E]">Stack Every Deal in One Click.</span>
       </h1>
 
       {/* Subtitle */}
-      <p className="text-base text-[#7D8590] max-w-2xl mb-9 leading-relaxed">
+      <p className="text-base text-[#8E95A3] w-full max-w-[90vw] md:max-w-2xl mb-9 leading-relaxed">
         MoneySaver automatically layers store coupons, bank card instant discounts, affiliate cashbacks,
         and discounted gift vouchers into a transparent Net Payable Price Matrix.
       </p>
@@ -38,29 +38,37 @@ export default function LandingPage() {
         ))}
       </div>
 
-      {/* CTA Buttons */}
-      <div className="flex flex-wrap justify-center gap-3">
-        <a
-          href="/dashboard"
-          id="cta-get-started"
-          className="px-7 py-3 rounded-lg bg-[#238636] hover:bg-[#2DA44E] text-white font-semibold shadow-[0_2px_12px_rgba(35,134,54,0.3)] hover:shadow-[0_4px_16px_rgba(35,134,54,0.4)] transition-all flex items-center gap-2 text-sm"
-        >
-          <SparkleIcon size={15} />
-          <span>Calculate Savings Now</span>
-          <span className="text-[#3FB950]">→</span>
-        </a>
-        <a
-          href="/register"
-          className="px-7 py-3 rounded-lg bg-[#161B22] hover:bg-[#1C2128] border border-[#30363D] hover:border-[#484F58] text-[#E6EDF3] font-semibold transition-all text-sm"
-        >
-          Create Free Account
-        </a>
-      </div>
+      {/* CTA Buttons & Trust Line */}
+      <div className="flex flex-col items-center w-full max-w-sm sm:max-w-none mx-auto">
+        <div className="flex flex-col sm:flex-row justify-center gap-3 w-full sm:w-auto">
+          <div className="flex flex-col items-center w-full sm:w-auto">
+            <a
+              href="/dashboard"
+              id="cta-get-started"
+              className="w-full sm:w-auto px-7 py-3 rounded-xl bg-[#238636] hover:bg-[#2DA44E] text-white font-semibold shadow-[0_2px_12px_rgba(35,134,54,0.3)] hover:shadow-[0_4px_16px_rgba(35,134,54,0.4)] transition-all flex items-center justify-center gap-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2DA44E]"
+            >
+              <SparkleIcon size={18} />
+              <span>Calculate My Savings Stack</span>
+            </a>
+            {/* Micro-copy beneath Primary CTA */}
+            <p className="mt-2 text-sm text-[#8E95A3] sm:hidden">Instant calculation • No credit card required</p>
+          </div>
+          <a
+            href="/register"
+            className="w-full sm:w-auto px-7 py-2.5 sm:py-3 rounded-xl bg-transparent hover:bg-[#161B22] border border-[#30363D] hover:border-[#484F58] text-[#B7BCC8] font-semibold transition-all flex items-center justify-center text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2DA44E]"
+          >
+            Create Account
+          </a>
+        </div>
+        
+        {/* Micro-copy for Desktop */}
+        <p className="hidden sm:block mt-3 text-sm text-[#8E95A3]">Instant calculation • No credit card required</p>
 
-      {/* Trust line */}
-      <p className="mt-8 text-xs text-[#484F58] tracking-wide">
-        Trusted by smart shoppers across India · No card required
-      </p>
+        {/* Trust line exactly 24px below secondary button container */}
+        <p className="mt-[24px] text-xs text-[#8E95A3] tracking-wide">
+          Trusted by smart shoppers across India
+        </p>
+      </div>
     </main>
   )
 }

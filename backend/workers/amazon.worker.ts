@@ -89,41 +89,40 @@ export class AmazonWorker implements BaseWorker {
 
     const results: RawScrapedListing[] = []
 
-    /**
-     * Amazon search pages embed product data in <div data-asin="..."> wrappers.
-     * We extract ASIN + price + title using targeted regex patterns.
-     */
+    // Extract blocks based on data-asin to prevent regex bleeding across products
+    const asinRe = /data-asin="([A-Z0-9]{10})"/g
+    const seenAsins = new Set<string>()
+    let asinMatch: RegExpExecArray | null
 
-    // Extract product blocks: data-asin="B0..." followed by title + price
-    const asinBlockRe = /data-asin="([A-Z0-9]{10})"[^>]*data-index="(\d+)"[\s\S]{0,2000}?class="[^"]*a-size-base-plus[^"]*a-color-base[^"]*"[^>]*>([\s\S]{0,300}?)<\/span>/g
-    const priceWholeRe = /class="a-price-whole"[^>]*>([\d,]+)</g
-    const priceFractionRe = /class="a-price-fraction"[^>]*>(\d+)</g
+    while ((asinMatch = asinRe.exec(html)) !== null && results.length < 5) {
+      const asin = asinMatch[1]
+      if (seenAsins.has(asin)) continue
 
-    // Simpler approach: find all price-whole spans and extract surrounding context
-    const priceMatches: string[] = []
-    let priceMatch: RegExpExecArray | null
-    const priceRe = /data-asin="([A-Z0-9]{10})"[\s\S]{0,3000}?<span class="a-price-whole">([0-9,]+)<\/span>/g
+      const blockStart = asinMatch.index
+      const block = html.slice(blockStart, blockStart + 8000)
+      const nextAsinIndex = block.indexOf('data-asin="', 20)
+      const blockContent = nextAsinIndex !== -1 ? block.slice(0, nextAsinIndex) : block
 
-    while ((priceMatch = priceRe.exec(html)) !== null && results.length < 5) {
-      const asin = priceMatch[1]
-      const rawPrice = priceMatch[2].replace(/,/g, '')
+      // Extract price strictly from this block
+      const priceMatch = blockContent.match(/class="a-price-whole"[^>]*>([0-9,]+)<\/span>/)
+      if (!priceMatch) continue
+
+      const rawPrice = priceMatch[1].replace(/,/g, '')
       const price = parseInt(rawPrice, 10)
       if (!price || price < 1 || price > 10000000) continue
-      if (priceMatches.includes(asin)) continue
-      priceMatches.push(asin)
+      
+      seenAsins.add(asin)
 
-      // Extract title near this ASIN
-      const asinStart = html.indexOf(`data-asin="${asin}"`)
-      const block = html.slice(asinStart, asinStart + 4000)
+      // Extract title strictly from this block
       const titleRe = /class="[^"]*a-size-(?:base-plus|medium)[^"]*a-color-base[^"]*"[^>]*>([\s\S]{5,200}?)<\/span>/
-      const titleMatch = block.match(titleRe)
+      const titleMatch = blockContent.match(titleRe)
       const title = titleMatch
         ? titleMatch[1].replace(/<[^>]+>/g, '').trim()
         : query
 
       // Extract MRP (struck-through price)
       const mrpRe = /class="a-text-price"[^>]*>[\s\S]{0,50}?<span[^>]*>([₹\s0-9,]+)<\/span>/
-      const mrpMatch = block.match(mrpRe)
+      const mrpMatch = blockContent.match(mrpRe)
       const mrp = mrpMatch
         ? parseInt(mrpMatch[1].replace(/[₹,\s]/g, ''), 10)
         : Math.round(price * 1.2)
@@ -132,8 +131,7 @@ export class AmazonWorker implements BaseWorker {
       const rawOfferTexts: string[] = []
       const offerRe = /class="[^"]*s-badge[^"]*"[^>]*>([\s\S]{0,100}?)<\/span>/g
       let offerMatch: RegExpExecArray | null
-      const blockSlice = block.slice(0, 3000)
-      while ((offerMatch = offerRe.exec(blockSlice)) !== null) {
+      while ((offerMatch = offerRe.exec(blockContent)) !== null) {
         const offerText = offerMatch[1].replace(/<[^>]+>/g, '').trim()
         if (offerText.length > 3 && offerText.length < 150) {
           rawOfferTexts.push(offerText)
@@ -147,8 +145,8 @@ export class AmazonWorker implements BaseWorker {
         url: `https://www.amazon.in/dp/${asin}`,
         mrp: mrp > price ? mrp : Math.round(price * 1.2),
         currentPrice: price,
-        inStock: !block.includes('Currently unavailable'),
-        deliveryText: block.includes('FREE delivery') ? 'FREE Delivery' : undefined,
+        inStock: !blockContent.includes('Currently unavailable'),
+        deliveryText: blockContent.includes('FREE delivery') ? 'FREE Delivery' : undefined,
         rawOfferTexts,
         scrapedAt: new Date().toISOString(),
       })

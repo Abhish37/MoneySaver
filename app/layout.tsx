@@ -51,7 +51,7 @@ export default function RootLayout({
   if (!isValidClerkKey) {
     return (
       <html lang="en" className={`${inter.variable} ${outfit.variable} ${mono.variable} dark`}>
-        <body className="antialiased min-h-screen flex flex-col bg-[#0E1117]">
+        <body className="antialiased min-h-screen flex flex-col bg-[#0E1018]">
           <CartProvider>
             {children}
           </CartProvider>
@@ -63,7 +63,7 @@ export default function RootLayout({
   return (
     <ClerkProvider publishableKey={rawKey}>
       <html lang="en" className={`${inter.variable} ${outfit.variable} ${mono.variable} dark`}>
-        <body className="antialiased min-h-screen flex flex-col bg-[#0E1117]">
+        <body className="antialiased min-h-screen flex flex-col bg-[#0E1018]">
           <CartProvider>
             {children}
           </CartProvider>

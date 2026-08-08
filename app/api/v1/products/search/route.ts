@@ -62,8 +62,25 @@ function slugify(name: string): string {
  */
 function buildRetailerUrl(retailerName: string, productTitle: string, serpApiLink: string): string {
   const encoded = encodeURIComponent(productTitle)
-  const r = retailerName.toLowerCase()
 
+  if (serpApiLink) {
+    try {
+      if (serpApiLink.includes('google.com/url')) {
+        const u = new URL(serpApiLink)
+        const target = u.searchParams.get('url') || u.searchParams.get('q')
+        if (target && target.startsWith('http') && !target.includes('google.com/shopping')) {
+          return target
+        }
+      }
+      if (serpApiLink.startsWith('https://') && !serpApiLink.includes('google.com/shopping')) {
+        return serpApiLink
+      }
+    } catch (e) {
+      // Ignore parsing errors
+    }
+  }
+
+  const r = retailerName.toLowerCase()
   if (r.includes('amazon'))         return `https://www.amazon.in/s?k=${encoded}`
   if (r.includes('flipkart'))       return `https://www.flipkart.com/search?q=${encoded}`
   if (r.includes('nykaa'))          return `https://www.nykaa.com/search/result/?q=${encoded}&root=search`
@@ -83,10 +100,6 @@ function buildRetailerUrl(retailerName: string, productTitle: string, serpApiLin
   if (r.includes('samsung'))        return `https://www.samsung.com/in/smartphones/all-smartphones/?galaxy=${encoded}`
   if (r.includes('apple'))          return `https://www.apple.com/in/search/${encoded}?src=serp`
 
-  // For any other retailer, prefer the SerpAPI link if valid, else Google search
-  if (serpApiLink && serpApiLink.startsWith('https://') && !serpApiLink.includes('google.com/shopping')) {
-    return serpApiLink
-  }
   return `https://www.google.com/search?q=${encoded}+buy+online+india`
 }
 
@@ -122,6 +135,31 @@ function detectCategory(titleAndQuery: string): string {
   if (/shoe|sneaker|sandal|boot|slipper|heel|loafer|shirt|dress|kurta|jeans|legging|saree|kurti|top|t-shirt|fashion|clothing|apparel|watch|bag|handbag/.test(t)) return 'Fashion'
   if (/grocery|vegetable|fruit|milk|bread|oil|rice|atta|dal|snack|biscuit|chocolate|coffee|tea|juice/.test(t)) return 'Food & Grocery'
   return 'Shopping'
+}
+
+/**
+ * Strict relevance filter to drop mismatched products and accessories.
+ */
+function isRelevant(title: string, query: string): boolean {
+  const qTerms = query.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/)
+  const tTerms = title.toLowerCase().replace(/[^\w\s]/g, '')
+  
+  // Strict check: Any query term containing a digit MUST be in the title
+  const numericTerms = qTerms.filter(t => /\d/.test(t))
+  for (const nt of numericTerms) {
+    if (!tTerms.includes(nt)) return false
+  }
+
+  // Filter out cheap accessories if the user didn't explicitly search for them
+  const isAccessorySearch = /case|cover|silicone|sleeve|tip|replacement|cable/.test(query.toLowerCase())
+  if (!isAccessorySearch) {
+    const tLower = title.toLowerCase()
+    if (/case|cover|silicone|sleeve|replacement ear|ear tips/.test(tLower)) {
+      return false
+    }
+  }
+
+  return true
 }
 
 /** 
@@ -212,6 +250,7 @@ function buildProductCards(items: SerpShoppingItem[], query: string): SearchProd
   for (const item of items) {
     const price = item.extracted_price
     if (!price || price <= 0) continue
+    if (!isRelevant(item.title, query)) continue
 
     const cleanSource = cleanSourceName(item.source)
     const key = getGroupKey(item.title)
