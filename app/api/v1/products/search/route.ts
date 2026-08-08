@@ -154,6 +154,14 @@ function isRelevant(title: string, query: string): boolean {
     if (!tTerms.includes(nt)) return false
   }
 
+  // Strict check: Any model keywords MUST be in the title
+  const modelKeywords = ['nord', 'airpods', 'galaxy', 'ultra', 'max', 'plus', 'mini', 'pro', 'fe']
+  for (const mk of modelKeywords) {
+    if (qTerms.includes(mk) && !tTerms.includes(mk)) {
+      return false
+    }
+  }
+
   // Filter out cheap accessories if the user didn't explicitly search for them
   const isAccessorySearch = /case|cover|silicone|sleeve|tip|replacement|cable/.test(query.toLowerCase())
   if (!isAccessorySearch) {
@@ -281,11 +289,17 @@ function buildProductCards(items: SerpShoppingItem[], query: string): SearchProd
   }
 
   const cards: SearchProductCard[] = []
+  const queryBrand = extractBrand(query)
 
   for (const [, group] of Array.from(groups)) {
     const lead = group.lead
     const category = detectCategory(lead.title + ' ' + query)
     const brand = extractBrand(lead.title)
+
+    // Drop group if it completely mismatches the explicit requested brand
+    if (queryBrand !== 'Unknown' && brand !== 'Unknown' && queryBrand.toLowerCase() !== brand.toLowerCase()) {
+      continue
+    }
 
     // Deduplicate by retailer — keep lowest price per retailer
     const byRetailer = new Map<string, SerpShoppingItem & { cleanSource: string }>()
@@ -296,7 +310,25 @@ function buildProductCards(items: SerpShoppingItem[], query: string): SearchProd
       }
     }
 
-    const listings: RetailerListing[] = Array.from(byRetailer.values()).map(item => {
+    let validListings = Array.from(byRetailer.values())
+
+    // Price Discrepancy Filter (Median Outlier Rejection)
+    // Drops deceptive Google Shopping accessories grouped under the main product
+    if (validListings.length >= 2) {
+      const sortedPrices = validListings.map(l => l.extracted_price!).sort((a, b) => a - b)
+      let median = 0
+      const mid = Math.floor(sortedPrices.length / 2)
+      if (sortedPrices.length % 2 === 0) {
+        median = (sortedPrices[mid - 1] + sortedPrices[mid]) / 2
+      } else {
+        median = sortedPrices[mid]
+      }
+      
+      // Reject any price less than 50% of the median price
+      validListings = validListings.filter(l => l.extracted_price! >= median * 0.5)
+    }
+
+    const listings: RetailerListing[] = validListings.map(item => {
       const price = item.extracted_price!
       const mrp = item.extracted_old_price
         ? item.extracted_old_price
