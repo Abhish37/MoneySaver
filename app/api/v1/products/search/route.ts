@@ -80,7 +80,7 @@ function buildRetailerUrl(retailerName: string, productTitle: string, serpApiLin
     }
   }
 
-  const r = retailerName.toLowerCase()
+  const r = (retailerName || '').toLowerCase()
   if (r.includes('amazon'))         return `https://www.amazon.in/s?k=${encoded}`
   if (r.includes('flipkart'))       return `https://www.flipkart.com/search?q=${encoded}`
   if (r.includes('nykaa'))          return `https://www.nykaa.com/search/result/?q=${encoded}&root=search`
@@ -104,6 +104,7 @@ function buildRetailerUrl(retailerName: string, productTitle: string, serpApiLin
 }
 
 function cleanSourceName(source: string): string {
+  if (!source) return 'Unknown'
   return source
     .replace(/\.in$/i, '')
     .replace(/\.com$/i, '')
@@ -112,6 +113,7 @@ function cleanSourceName(source: string): string {
 }
 
 function extractBrand(title: string): string {
+  if (!title) return 'Unknown'
   const knownBrands = [
     'Apple', 'Samsung', 'OnePlus', 'Google', 'Xiaomi', 'Realme', 'Vivo', 'OPPO', 'Nothing',
     'Foxtale', 'Minimalist', 'Plum', 'Mamaearth', 'WOW', 'Neutrogena', 'CeraVe', 'Cetaphil',
@@ -128,6 +130,7 @@ function extractBrand(title: string): string {
 }
 
 function detectCategory(titleAndQuery: string): string {
+  if (!titleAndQuery) return 'Shopping'
   const t = titleAndQuery.toLowerCase()
   if (/iphone|samsung|pixel|oneplus|realme|xiaomi|vivo|oppo|nothing|phone|laptop|macbook|tablet|earphone|earbuds|headphone|airpods|watch|camera|tv|television|monitor|keyboard|mouse/.test(t)) return 'Electronics'
   if (/serum|moisturizer|moisturiser|lotion|cream|sunscreen|toner|cleanser|shampoo|conditioner|mask|lipstick|foundation|blush|kajal|eyeliner|skincare|hair care|nykaa|hyaluronic|niacinamide|retinol|vitamin c face|spf/.test(t)) return 'Beauty & Skincare'
@@ -141,6 +144,7 @@ function detectCategory(titleAndQuery: string): string {
  * Strict relevance filter to drop mismatched products and accessories.
  */
 function isRelevant(title: string, query: string): boolean {
+  if (!title || !query) return false
   const qTerms = query.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/)
   const tTerms = title.toLowerCase().replace(/[^\w\s]/g, '')
   
@@ -176,6 +180,7 @@ function isRelevant(title: string, query: string): boolean {
  * Takes first 4 meaningful words of lowercased title.
  */
 function getGroupKey(title: string): string {
+  if (!title) return 'unknown'
   const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'for', 'with', 'by', 'in', 'of', 'to', 'at', 'on', 'pack', 'combo'])
   return title
     .toLowerCase()
