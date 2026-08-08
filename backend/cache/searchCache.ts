@@ -24,7 +24,7 @@ function normalizeQuery(query: string): string {
 
 export async function getCachedSearch<T = object>(query: string): Promise<T | null> {
   try {
-    const key = `ms:search:${normalizeQuery(query)}`
+    const key = `ms:search:v2:${normalizeQuery(query)}`
     const cached = await redis.get<T>(key)
     return cached ?? null
   } catch (error) {
@@ -40,7 +40,7 @@ export async function setCachedSearch(
   ttl: number = TTL.SEARCH
 ): Promise<void> {
   try {
-    const key = `ms:search:${normalizeQuery(query)}`
+    const key = `ms:search:v2:${normalizeQuery(query)}`
     await redis.set(key, data, { ex: ttl })
   } catch (error) {
     console.warn('[SearchCache] Redis SET failed:', error)
@@ -73,7 +73,7 @@ export async function setCachedProduct<T>(
 
 export async function invalidateSearchCache(query: string): Promise<void> {
   try {
-    const key = `ms:search:${normalizeQuery(query)}`
+    const key = `ms:search:v2:${normalizeQuery(query)}`
     await redis.del(key)
   } catch (error) {
     console.warn('[SearchCache] Redis DEL failed:', error)

@@ -157,6 +157,15 @@ function isRelevant(title: string, query: string): boolean {
     if (/case|cover|silicone|sleeve|replacement ear|ear tips/.test(tLower)) {
       return false
     }
+    
+    // Aggressively filter out titles like "Earbuds for Realme..." or "Case for iPhone..."
+    // If the title contains " for " followed by a brand or core keyword from the query, it is an accessory.
+    // We check if " for " is immediately followed by any of the query terms.
+    for (const qt of qTerms) {
+      if (qt.length > 3 && tLower.includes(` for ${qt}`)) {
+        return false
+      }
+    }
   }
 
   return true
