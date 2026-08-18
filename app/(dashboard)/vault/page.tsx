@@ -186,10 +186,9 @@ export default function VaultPage() {
 
         {/* TAB 2: LINK WALLET / EMAIL PERMISSION HUB */}
         {activeTab === 'LINK_WALLET' && (
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center space-y-4">
-            <div className="w-16 h-16 rounded-full bg-slate-950 border border-slate-800 flex items-center justify-center text-3xl mx-auto">🚧</div>
-            <h3 className="text-xl font-bold text-slate-100">This feature is coming soon</h3>
-            <p className="text-xs text-slate-400 max-w-md mx-auto">Automated wallet linking is currently under development. Stay tuned for updates!</p>
+          <div className="flex flex-col items-center justify-center min-h-[300px] w-full space-y-3">
+            <h2 className="text-2xl font-semibold text-gray-300">Coming soon</h2>
+            <p className="text-xs text-slate-400">Wallet and email auto-sync features are currently under development.</p>
           </div>
         )}
       </main>
