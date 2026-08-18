@@ -54,7 +54,7 @@ export default function Header() {
           return { ...c, daysLeft }
         })
         .filter((c) => {
-          if (c.daysLeft > 10) return false
+          if (c.daysLeft > 10 || c.daysLeft < 0) return false
           if (!notifiedTracking[c.id]) {
             notifiedTracking[c.id] = Date.now()
             trackingUpdated = true
@@ -69,11 +69,61 @@ export default function Header() {
         localStorage.setItem('moneysaver_notified_coupons', JSON.stringify(notifiedTracking))
       }
 
+      // ── Web Push bridge ──────────────────────────────────────────────────────
+      // Fire a system-tray notification for each expiring coupon that hasn't
+      // been web-pushed yet. Tracks sent state in 'moneysaver_push_sent' so
+      // each coupon only ever fires once, even across multiple loadNotifications() calls.
+      if (
+        typeof window !== 'undefined' &&
+        'serviceWorker' in navigator &&
+        'Notification' in window &&
+        Notification.permission === 'granted'
+      ) {
+        try {
+          const pushSentRaw = localStorage.getItem('moneysaver_push_sent')
+          const pushSent: Record<string, boolean> = pushSentRaw ? JSON.parse(pushSentRaw) : {}
+
+          const unsentCoupons = expiring.filter((c) => !pushSent[c.id])
+
+          if (unsentCoupons.length > 0) {
+            navigator.serviceWorker.ready
+              .then((registration) => {
+                unsentCoupons.forEach((coupon) => {
+                  const label =
+                    coupon.discount ||
+                    (coupon.discountValue > 50
+                      ? `₹${coupon.discountValue} OFF`
+                      : `${coupon.discountValue}% OFF`)
+                  const dayWord = coupon.daysLeft === 1 ? 'day' : 'days'
+
+                  registration.showNotification('⏰ Coupon Expiring Soon — MoneySaver', {
+                    body: `${coupon.store} · ${label} expires in ${coupon.daysLeft} ${dayWord}.\nCode: ${coupon.code}`,
+                    icon: '/icon-192x192.png',
+                    badge: '/badge.png',
+                    tag: `coupon-expiry-${coupon.id}`,
+                    data: { url: '/vault' },
+                    requireInteraction: coupon.daysLeft <= 1,
+                  } as NotificationOptions)
+                })
+              })
+              .catch((err) => console.warn('[Push Bridge] SW not ready:', err))
+
+            // Mark these coupons as push-sent so we never duplicate
+            unsentCoupons.forEach((c) => { pushSent[c.id] = true })
+            localStorage.setItem('moneysaver_push_sent', JSON.stringify(pushSent))
+          }
+        } catch (pushErr) {
+          console.warn('[Push Bridge] Failed to send SW notification:', pushErr)
+        }
+      }
+      // ────────────────────────────────────────────────────────────────────────
+
       setExpiringCoupons(expiring)
     } catch (e) {
       console.error(e)
     }
   }
+
 
   useEffect(() => {
     setMounted(true)

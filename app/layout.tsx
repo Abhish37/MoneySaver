@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Outfit, Inter, JetBrains_Mono } from 'next/font/google'
 import { CartProvider } from '@/components/CartProvider'
+import { NotificationProvider } from '@/lib/notifications/NotificationProvider'
 import './globals.css'
 
 const inter = Inter({
@@ -52,9 +53,11 @@ export default function RootLayout({
     return (
       <html lang="en" className={`${inter.variable} ${outfit.variable} ${mono.variable} dark`}>
         <body className="antialiased min-h-screen flex flex-col bg-[#0E1018]">
-          <CartProvider>
-            {children}
-          </CartProvider>
+          <NotificationProvider>
+            <CartProvider>
+              {children}
+            </CartProvider>
+          </NotificationProvider>
         </body>
       </html>
     )
@@ -64,9 +67,11 @@ export default function RootLayout({
     <ClerkProvider publishableKey={rawKey}>
       <html lang="en" className={`${inter.variable} ${outfit.variable} ${mono.variable} dark`}>
         <body className="antialiased min-h-screen flex flex-col bg-[#0E1018]">
-          <CartProvider>
-            {children}
-          </CartProvider>
+          <NotificationProvider>
+            <CartProvider>
+              {children}
+            </CartProvider>
+          </NotificationProvider>
         </body>
       </html>
     </ClerkProvider>

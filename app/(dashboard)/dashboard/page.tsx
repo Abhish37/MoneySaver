@@ -6,6 +6,7 @@ import MobileNav from '../../../components/MobileNav'
 import OCRUploadModal from '../../../components/OCRUploadModal'
 import BrandCard from '../../../components/BrandCard'
 import ViewStackModal from '../../../components/ViewStackModal'
+import { PushNotificationPrompt } from '../../../components/PushNotificationPrompt'
 import { EXPANDED_STORES } from '../../../lib/data/stores'
 import { searchRealtimeProducts, RealtimeProductResult, MerchantProductOffer } from '../../../lib/scraper/productSearch'
 import { getAuthSession, UserProfile } from '../../../lib/auth/session'
@@ -471,6 +472,9 @@ export default function DashboardPage() {
 
       <MobileNav onOpenUpload={() => setIsUploadOpen(true)} />
       <OCRUploadModal isOpen={isUploadOpen} onClose={() => setIsUploadOpen(false)} />
+
+      {/* Web Push Notification Permission Prompt — floats bottom-right, auto-hides after grant/dismiss */}
+      <PushNotificationPrompt />
     </div>
   )
 }
