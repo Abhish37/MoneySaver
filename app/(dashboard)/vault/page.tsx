@@ -116,14 +116,6 @@ export default function VaultPage() {
                 : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
             }`}
           >🎟️ My Saved Coupons ({coupons.length})</button>
-          <button
-            onClick={() => setActiveTab('LINK_WALLET')}
-            className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all border ${
-              activeTab === 'LINK_WALLET'
-                ? 'bg-amber-500/20 border-amber-500 text-amber-400 shadow-md'
-                : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
-            }`}
-          >🔗 Link Wallet / Email ({linkedCount} Connected)</button>
         </div>
 
         {/* TAB 1: MY SAVED COUPONS */}
