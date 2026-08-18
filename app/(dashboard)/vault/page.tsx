@@ -236,77 +236,10 @@ export default function VaultPage() {
 
         {/* TAB 2: LINK WALLET / EMAIL PERMISSION HUB */}
         {activeTab === 'LINK_WALLET' && (
-          <div className="space-y-6">
-            {/* Privacy Notice */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-2">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">🔒</span>
-                <h3 className="text-sm font-bold text-slate-100">Privacy & Security Commitment</h3>
-              </div>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                We never store your passwords. We only access the coupon/rewards section of each linked app with your explicit permission.
-                You can unlink any wallet at any time. All data stays on your device.
-              </p>
-            </div>
-
-            {/* Wallet Authorization Toggles */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {wallets.map((wallet) => (
-                <div
-                  key={wallet.id}
-                  className={`bg-slate-900 border rounded-2xl p-5 transition-all ${
-                    wallet.linked
-                      ? 'border-emerald-500/40 shadow-lg shadow-emerald-950/20'
-                      : 'border-slate-800 hover:border-slate-700'
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-start gap-3 flex-1 min-w-0">
-                      <span className="text-2xl mt-0.5">{wallet.icon}</span>
-                      <div className="min-w-0">
-                        <h4 className="text-sm font-bold text-slate-100">{wallet.name}</h4>
-                        <p className="text-[11px] text-slate-400 mt-0.5">{wallet.description}</p>
-
-                        {wallet.linked && wallet.couponsFound > 0 && (
-                          <span className="inline-block mt-2 px-2 py-0.5 rounded bg-emerald-950 border border-emerald-500/40 text-[10px] text-emerald-400 font-bold font-mono">
-                            ✓ {wallet.couponsFound} coupons imported
-                          </span>
-                        )}
-
-                        {linkSuccess === wallet.id && (
-                          <div className="mt-2 text-xs text-emerald-400 font-semibold animate-fade-in">
-                            🎉 Successfully linked! Coupons imported to your vault.
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Link / Unlink Toggle */}
-                    <div>
-                      {linkingWallet === wallet.id ? (
-                        <div className="flex items-center justify-center px-4 py-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-400 border border-slate-700">
-                          Coming Soon
-                        </div>
-                      ) : wallet.linked ? (
-                        <button
-                          onClick={() => handleUnlinkWallet(wallet.id)}
-                          className="px-4 py-2 rounded-xl bg-red-950/60 hover:bg-red-950 border border-red-500/40 text-red-400 text-xs font-bold transition-colors"
-                        >
-                          Unlink
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleLinkWallet(wallet.id)}
-                          className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors shadow-md"
-                        >
-                          Grant Access
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center space-y-4">
+            <div className="w-16 h-16 rounded-full bg-slate-950 border border-slate-800 flex items-center justify-center text-3xl mx-auto">🚧</div>
+            <h3 className="text-xl font-bold text-slate-100">This feature is coming soon</h3>
+            <p className="text-xs text-slate-400 max-w-md mx-auto">Automated wallet linking is currently under development. Stay tuned for updates!</p>
           </div>
         )}
       </main>
