@@ -112,40 +112,9 @@ export default function VaultPage() {
   const handleLinkWallet = (walletId: string) => {
     setLinkingWallet(walletId)
 
-    // Simulate permission grant & coupon discovery
+    // Show 'Coming Soon' and reset after 2 seconds
     setTimeout(() => {
-      const randomCoupons = Math.floor(Math.random() * 4) + 1
-
-      // Generate discovered coupons
-      const walletInfo = WALLET_SOURCES.find((w) => w.id === walletId)
-      const newCoupons: VaultCoupon[] = Array.from({ length: randomCoupons }, (_, idx) => ({
-        id: `${walletId}_${Date.now()}_${idx}`,
-        store: walletInfo?.name.split(' ')[0] || 'Store',
-        code: `${walletId.toUpperCase()}${Math.floor(Math.random() * 900 + 100)}`,
-        discountValue: [50, 100, 150, 200, 75][Math.floor(Math.random() * 5)],
-        minCartValue: [199, 299, 499, 699, 999][Math.floor(Math.random() * 5)],
-        originApp: walletInfo?.name || 'Linked Wallet',
-        expires: '2026-12-31',
-      }))
-
-      const updatedCoupons = [...newCoupons, ...coupons]
-      setCoupons(updatedCoupons)
-      setStorage('moneysaver_user_vault', updatedCoupons)
-
-      // Update wallet linked state
-      const updatedWallets = wallets.map((w) =>
-        w.id === walletId ? { ...w, linked: true, couponsFound: randomCoupons } : w
-      )
-      setWallets(updatedWallets)
-
-      // Persist wallet linked state
-      const linkedState: Record<string, unknown> = {}
-      updatedWallets.forEach((w) => { linkedState[w.id] = w.linked; linkedState[`${w.id}_count`] = w.couponsFound })
-      setStorage('moneysaver_linked_wallets', linkedState)
-
       setLinkingWallet(null)
-      setLinkSuccess(walletId)
-      setTimeout(() => setLinkSuccess(null), 3000)
     }, 2000)
   }
 
@@ -315,9 +284,8 @@ export default function VaultPage() {
                     {/* Link / Unlink Toggle */}
                     <div>
                       {linkingWallet === wallet.id ? (
-                        <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-800 text-xs text-slate-300">
-                          <div className="w-3 h-3 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-                          Linking...
+                        <div className="flex items-center justify-center px-4 py-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-400 border border-slate-700">
+                          Coming Soon
                         </div>
                       ) : wallet.linked ? (
                         <button
@@ -328,10 +296,10 @@ export default function VaultPage() {
                         </button>
                       ) : (
                         <button
-                          disabled
-                          className="px-4 py-2 rounded-xl bg-slate-800 text-slate-500 text-xs font-bold cursor-not-allowed border border-slate-700"
+                          onClick={() => handleLinkWallet(wallet.id)}
+                          className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors shadow-md"
                         >
-                          Coming Soon
+                          Grant Access
                         </button>
                       )}
                     </div>
