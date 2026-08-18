@@ -21,27 +21,9 @@ interface VaultCoupon {
   termsAndConditions?: string[]
 }
 
-interface LinkedWallet {
-  id: string
-  name: string
-  icon: string
-  description: string
-  linked: boolean
-  couponsFound: number
-}
 
-const WALLET_SOURCES: LinkedWallet[] = [
-  { id: 'gmail', name: 'Gmail Reward Emails', icon: '📧', description: 'Scan reward emails from GPay, Amazon Pay, Paytm', linked: false, couponsFound: 0 },
-  { id: 'zomato', name: 'Zomato Coupons', icon: '🍔', description: 'Import active Zomato promo codes & vouchers', linked: false, couponsFound: 0 },
-  { id: 'swiggy', name: 'Swiggy Coupons', icon: '🍕', description: 'Import Swiggy One offers & reward coupons', linked: false, couponsFound: 0 },
-  { id: 'gpay', name: 'Google Pay Rewards', icon: '💳', description: 'Import scratch card rewards & vouchers', linked: false, couponsFound: 0 },
-  { id: 'amazon', name: 'Amazon Pay Rewards', icon: '📦', description: 'Import Amazon Pay cashback & reward vouchers', linked: false, couponsFound: 0 },
-  { id: 'phonepe', name: 'PhonePe Rewards', icon: '📱', description: 'Import PhonePe cashback & brand vouchers', linked: false, couponsFound: 0 },
-  { id: 'paytm', name: 'Paytm Rewards', icon: '⚡', description: 'Import Paytm cashback vouchers & promo codes', linked: false, couponsFound: 0 },
-  { id: 'magicpin', name: 'Magicpin Rewards', icon: '🛍️', description: 'Import Magicpin cashback & store vouchers', linked: false, couponsFound: 0 },
-  { id: 'myntra', name: 'Myntra Vouchers', icon: '👗', description: 'Import Myntra Insider points & promo codes', linked: false, couponsFound: 0 },
-  { id: 'bhim', name: 'BHIM UPI Rewards', icon: '🏦', description: 'Import BHIM UPI cashback rewards', linked: false, couponsFound: 0 },
-]
+
+
 
 export default function VaultPage() {
   const { user } = useRequireAuth()
@@ -54,11 +36,7 @@ export default function VaultPage() {
   const [editingCoupon, setEditingCoupon] = useState<VaultCoupon | null>(null)
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
 
-  // Link Wallet State
-  const [wallets, setWallets] = useState<LinkedWallet[]>(WALLET_SOURCES)
-  const [linkingWallet, setLinkingWallet] = useState<string | null>(null)
-  const [linkSuccess, setLinkSuccess] = useState<string | null>(null)
-
+  
   const loadCoupons = () => {
     const rawCoupons = getStorage<VaultCoupon[]>('moneysaver_user_vault', [])
     const todayStr = new Date().toISOString().split('T')[0]
@@ -69,15 +47,7 @@ export default function VaultPage() {
     // Load coupons on mount
     loadCoupons()
 
-    // Load linked wallet state
-    const linkedState = getStorage<Record<string, unknown>>('moneysaver_linked_wallets', {})
-    if (Object.keys(linkedState).length > 0) {
-      setWallets(WALLET_SOURCES.map((w) => ({
-        ...w,
-        linked: Boolean(linkedState[w.id]),
-        couponsFound: Number(linkedState[`${w.id}_count`]) || 0,
-      })))
-    }
+    
 
     // Re-load coupons whenever the OCR modal (or any other source) saves a new one
     window.addEventListener('vaultUpdated', loadCoupons)
@@ -109,31 +79,11 @@ export default function VaultPage() {
     window.dispatchEvent(new Event('vaultUpdated'))
   }
 
-  const handleLinkWallet = (walletId: string) => {
-    setLinkingWallet(walletId)
+  
 
-    // Show 'Coming Soon' and reset after 2 seconds
-    setTimeout(() => {
-      setLinkingWallet(null)
-    }, 2000)
-  }
+  
 
-  const handleUnlinkWallet = (walletId: string) => {
-    const updatedWallets = wallets.map((w) =>
-      w.id === walletId ? { ...w, linked: false, couponsFound: 0 } : w
-    )
-    setWallets(updatedWallets)
-
-    // Remove coupons from this wallet
-    const updatedCoupons = coupons.filter((c) => !c.id.startsWith(walletId))
-    setCoupons(updatedCoupons)
-    setStorage('moneysaver_user_vault', updatedCoupons)
-    const linkedState: Record<string, unknown> = {}
-    updatedWallets.forEach((w) => { linkedState[w.id] = w.linked; linkedState[`${w.id}_count`] = w.couponsFound })
-    setStorage('moneysaver_linked_wallets', linkedState)
-  }
-
-  const linkedCount = wallets.filter((w) => w.linked).length
+  const linkedCount = 0
 
   if (!user) return null
 
