@@ -96,6 +96,7 @@ export default function VaultPage() {
     setStorage('moneysaver_user_vault', updated)
     setDeleteConfirmId(null)
     if (viewingCoupon?.id === deleteConfirmId) setViewingCoupon(null)
+    window.dispatchEvent(new Event('vaultUpdated'))
   }
 
   const handleEditSave = (e: React.FormEvent) => {
@@ -105,6 +106,7 @@ export default function VaultPage() {
     setCoupons(updated)
     setStorage('moneysaver_user_vault', updated)
     setEditingCoupon(null)
+    window.dispatchEvent(new Event('vaultUpdated'))
   }
 
   const handleLinkWallet = (walletId: string) => {
@@ -326,10 +328,10 @@ export default function VaultPage() {
                         </button>
                       ) : (
                         <button
-                          onClick={() => handleLinkWallet(wallet.id)}
-                          className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors shadow-md"
+                          disabled
+                          className="px-4 py-2 rounded-xl bg-slate-800 text-slate-500 text-xs font-bold cursor-not-allowed border border-slate-700"
                         >
-                          Grant Access
+                          Coming Soon
                         </button>
                       )}
                     </div>
